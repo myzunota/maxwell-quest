@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAXWELL QUEST</title>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#020c1b;--panel:#060f20;--glass:rgba(6,15,32,.92);
+  --border:rgba(0,210,255,.18);--border2:rgba(0,210,255,.35);
+  --cyan:#00d2ff;--lime:#39ff14;--gold:#ffd93d;
+  --red:#ff2d55;--mag:#00ffaa;--orange:#ff9f40;
+  --txt:#b8d4f0;--txt2:#3a6080;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);
+  font-family:'Rajdhani',sans-serif;color:var(--txt)}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity .45s,transform .45s;will-change:opacity,transform;z-index:10}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.975)}
+#stars-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── TITLE ── */
+#title-screen{gap:0}
+.t-logo{font-family:‘Syncopate’,sans-serif;font-size:clamp(30px,5vw,64px);font-weight:700;
+letter-spacing:.15em;color:#fff;text-align:center;position:relative;z-index:2;
+text-shadow:0 0 40px var(–cyan),0 0 80px rgba(0,210,255,.35);
+animation:lp 3s ease-in-out infinite}
+.t-logo span{color:var(–cyan)}
+.t-sub{font-family:‘Rajdhani’,sans-serif;font-size:clamp(11px,1.5vw,16px);
+letter-spacing:.4em;color:var(–gold);margin-top:10px;opacity:.9;
+text-align:center;position:relative;z-index:2}
+@keyframes lp{0%,100%{text-shadow:0 0 40px var(–cyan),0 0 80px rgba(0,210,255,.3)}
+50%{text-shadow:0 0 65px var(–cyan),0 0 130px rgba(0,210,255,.6)}}
+.t-btns{display:flex;gap:16px;margin-top:52px;position:relative;z-index:2}
+.t-btn{padding:14px 44px;font-family:‘Syncopate’,sans-serif;font-size:12px;
+letter-spacing:.22em;border:none;border-radius:3px;cursor:pointer;
+transition:all .2s;clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
+.t-btn-main{color:var(–ink);background:var(–cyan);box-shadow:0 0 28px rgba(0,210,255,.55)}
+.t-btn-main:hover{background:#fff;box-shadow:0 0 50px rgba(0,210,255,.9);transform:translateY(-2px)}
+.t-btn-sub{color:var(–gold);background:transparent;border:1px solid rgba(255,217,61,.5);
+box-shadow:0 0 14px rgba(255,217,61,.15)}
+.t-btn-sub:hover{background:rgba(255,217,61,.1);border-color:var(–gold);transform:translateY(-2px)}
+#title-deco{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+/* ── TUTORIAL ── */
+#tut-screen{padding:0;justify-content:flex-start}
+#tut-header{width:100%;height:50px;display:flex;align-items:center;padding:0 20px;gap:16px;
+flex-shrink:0;background:rgba(2,12,27,.93);border-bottom:1px solid var(–border);
+backdrop-filter:blur(10px)}
+.tut-logo{font-family:‘Syncopate’,sans-serif;font-size:13px;letter-spacing:.2em;color:var(–cyan)}
+.tut-logo span{color:var(–gold)}
+.tut-ttl{flex:1;text-align:center;font-family:‘Syncopate’,sans-serif;font-size:11px;
+letter-spacing:.3em;color:var(–gold)}
+.tut-skip{padding:6px 16px;border:1px solid var(–border);background:transparent;
+color:var(–txt2);font-family:‘Rajdhani’,sans-serif;font-size:12px;letter-spacing:.1em;
+cursor:pointer;border-radius:3px;transition:all .2s}
+.tut-skip:hover{border-color:var(–cyan);color:var(–cyan)}
+#tut-body{flex:1;width:100%;display:flex;overflow:hidden}
+#tut-canvas-wrap{flex:1;position:relative;overflow:hidden}
+#tut-canvas{display:block}
+/* Doctor dialogue panel */
+#tut-dialog{
+position:absolute;bottom:0;left:0;right:0;
+background:linear-gradient(180deg,rgba(2,12,27,0) 0%,rgba(2,12,27,.97) 12%);
+padding:0 0 0 0;
+display:flex;flex-direction:column;
+pointer-events:none;z-index:30}
+#tut-bubble{
+margin:0 24px 16px;
+background:var(–glass);
+border:1px solid var(–border2);
+border-radius:12px;
+padding:18px 22px;
+backdrop-filter:blur(18px);
+display:flex;gap:16px;align-items:flex-start;
+box-shadow:0 0 40px rgba(0,210,255,.1);
+pointer-events:all}
+#tut-avatar{
+width:68px;height:68px;border-radius:50%;flex-shrink:0;
+background:radial-gradient(circle at 38% 35%,#ffd93d,#c47800);
+border:2px solid var(–gold);box-shadow:0 0 18px rgba(255,217,61,.35);
+display:flex;align-items:center;justify-content:center;
+font-size:36px;position:relative;overflow:hidden}
+.tut-av-glasses{position:absolute;bottom:22px;font-size:18px}
+#tut-text-area{flex:1}
+#tut-speaker{font-family:‘Syncopate’,sans-serif;font-size:10px;letter-spacing:.22em;
+color:var(–gold);margin-bottom:7px}
+#tut-msg{font-size:15px;color:var(–txt);line-height:1.7;min-height:48px;font-weight:500}
+#tut-action-hint{margin-top:7px;font-size:12px;color:var(–cyan);letter-spacing:.05em;
+min-height:18px;opacity:.85}
+#tut-controls{
+display:flex;align-items:center;justify-content:space-between;
+padding:0 24px 20px;pointer-events:all}
+#tut-progress{display:flex;gap:6px}
+.tut-dot{width:8px;height:8px;border-radius:50%;background:var(–txt2);transition:all .3s}
+.tut-dot.active{background:var(–cyan);box-shadow:0 0 8px var(–cyan)}
+.tut-dot.done{background:rgba(0,210,255,.4)}
+#tut-next-btn{padding:10px 28px;font-family:‘Syncopate’,sans-serif;font-size:11px;
+letter-spacing:.2em;color:var(–ink);background:var(–cyan);border:none;
+border-radius:3px;cursor:pointer;transition:all .2s;
+clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+#tut-next-btn:hover{background:#fff}
+#tut-next-btn:disabled{opacity:.4;cursor:default;background:var(–txt2)}
+#tut-action-overlay{
+position:absolute;inset:0;pointer-events:none;z-index:20}
+
+/* Spotlight effect for tutorial */
+#tut-spotlight{
+position:absolute;inset:0;pointer-events:none;z-index:15;
+transition:all .6s}
+
+/* ── MAP ── */
+#map-screen{justify-content:flex-start;padding:0}
+.map-hdr{width:100%;padding:16px 36px 0;display:flex;align-items:center;
+justify-content:space-between;flex-shrink:0;position:relative;z-index:5}
+.map-logo{font-family:‘Syncopate’,sans-serif;font-size:15px;letter-spacing:.2em;
+color:var(–cyan);text-shadow:0 0 12px var(–cyan)}
+.map-logo span{color:var(–gold)}
+.map-back{padding:6px 18px;border:1px solid var(–border);background:transparent;
+color:var(–txt2);font-family:‘Rajdhani’,sans-serif;font-size:12px;letter-spacing:.15em;
+cursor:pointer;border-radius:3px;transition:all .2s}
+.map-back:hover{border-color:var(–cyan);color:var(–cyan)}
+.map-sub{text-align:center;padding:6px 0;font-family:‘Syncopate’,sans-serif;font-size:10px;
+letter-spacing:.4em;color:var(–txt2)}
+#map-wrap{flex:1;width:100%;position:relative;overflow:hidden;display:flex;
+align-items:center;justify-content:center}
+#map-svg{width:100%;height:100%;position:absolute;inset:0}
+.snode{cursor:pointer}
+.snode:hover polygon{filter:brightness(1.35) drop-shadow(0 0 10px currentColor)}
+.snode.locked{cursor:default;opacity:.35}
+.node-tip{position:absolute;background:var(–glass);border:1px solid var(–border);
+border-radius:8px;padding:14px 18px;min-width:210px;pointer-events:none;
+opacity:0;transition:opacity .18s;backdrop-filter:blur(18px);z-index:20;
+box-shadow:0 8px 40px rgba(0,0,0,.55)}
+.node-tip.show{opacity:1;pointer-events:all}
+.nt-id{font-family:‘Syncopate’,sans-serif;font-size:11px;letter-spacing:.15em;margin-bottom:6px}
+.nt-name{font-size:14px;color:var(–txt);margin-bottom:3px}
+.nt-eq{font-family:‘Share Tech Mono’,monospace;font-size:11px;margin-bottom:8px}
+.nt-stars{font-size:14px;color:var(–gold)}
+.nt-btn{display:block;width:100%;margin-top:10px;padding:9px 0;
+font-family:‘Syncopate’,sans-serif;font-size:10px;letter-spacing:.2em;
+color:var(–ink);background:var(–cyan);border:none;border-radius:2px;
+cursor:pointer;transition:all .15s;
+clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.nt-btn:hover{background:#fff}
+
+/* ── GAME ── */
+#game-screen{padding:0;gap:0;justify-content:flex-start}
+#ghdr{width:100%;height:50px;display:flex;align-items:center;padding:0 14px;gap:12px;
+flex-shrink:0;background:rgba(2,12,27,.93);border-bottom:1px solid var(–border);
+backdrop-filter:blur(10px);z-index:50}
+.gh-logo{font-family:‘Syncopate’,sans-serif;font-size:12px;letter-spacing:.2em;
+color:var(–cyan);white-space:nowrap;text-shadow:0 0 8px var(–cyan)}
+.gh-logo span{color:var(–gold)}
+.gh-mid{display:flex;flex-direction:column;align-items:center;flex:1}
+.gh-title{font-size:14px;font-weight:700;color:var(–gold);letter-spacing:.06em;line-height:1.1}
+.gh-world{font-size:11px;color:var(–txt2);letter-spacing:.14em}
+.gh-stats{display:flex;gap:18px}
+.gsi{text-align:right}
+.gsi-lbl{font-size:8px;letter-spacing:.22em;color:var(–txt2);font-family:‘Syncopate’,sans-serif}
+.gsi-val{font-family:‘Share Tech Mono’,monospace;font-size:17px;color:var(–cyan);line-height:1}
+.gh-mapbtn{padding:6px 14px;border:1px solid var(–border);background:transparent;
+color:var(–txt2);font-family:‘Rajdhani’,sans-serif;font-size:12px;letter-spacing:.1em;
+cursor:pointer;border-radius:3px;transition:all .2s;white-space:nowrap}
+.gh-mapbtn:hover{border-color:var(–cyan);color:var(–cyan)}
+#gbody{flex:1;width:100%;display:flex;overflow:hidden;position:relative}
+
+/* toolbar */
+#tbar{width:74px;background:rgba(6,15,32,.97);border-right:1px solid var(–border);
+display:flex;flex-direction:column;align-items:center;
+padding:10px 0;gap:2px;flex-shrink:0;z-index:30}
+.tb-sec{font-family:‘Syncopate’,sans-serif;font-size:7px;letter-spacing:.2em;
+color:var(–txt2);margin:4px 0 1px;text-align:center}
+.tbtn{width:54px;height:48px;border-radius:7px;border:1px solid rgba(0,210,255,.12);
+background:transparent;cursor:pointer;display:flex;flex-direction:column;
+align-items:center;justify-content:center;gap:2px;
+transition:all .15s;color:var(–txt2);font-size:9px;font-family:‘Rajdhani’,sans-serif}
+.tbtn:hover{border-color:rgba(0,210,255,.4);color:var(–cyan);background:rgba(0,210,255,.05)}
+.tbtn.active{border-color:var(–cyan);color:var(–cyan);
+background:rgba(0,210,255,.11);box-shadow:0 0 12px rgba(0,210,255,.2)}
+.tbtn .ti{font-size:20px;line-height:1}
+.tbtn.tpos.active{border-color:var(–red);color:var(–red);background:rgba(255,45,85,.1);box-shadow:0 0 12px rgba(255,45,85,.18)}
+.tbtn.tneg.active{border-color:#3a8fff;color:#3a8fff;background:rgba(58,143,255,.1);box-shadow:0 0 12px rgba(58,143,255,.18)}
+.tbtn.twire.active{border-color:var(–mag);color:var(–mag);background:rgba(0,255,170,.08);box-shadow:0 0 12px rgba(0,255,170,.2)}
+.tbtn.twirer.active{border-color:var(–orange);color:var(–orange);background:rgba(255,159,64,.08);box-shadow:0 0 12px rgba(255,159,64,.18)}
+.tbtn.tedit.active{border-color:var(–gold);color:var(–gold);background:rgba(255,217,61,.08);box-shadow:0 0 12px rgba(255,217,61,.18)}
+.tsep{width:40px;height:1px;background:var(–border);margin:4px 0}
+.mag-ctrl{width:54px}
+.mag-lbl{font-size:9px;color:var(–txt2);display:flex;justify-content:space-between;margin-bottom:2px}
+.mag-lbl span{font-family:‘Share Tech Mono’,monospace;color:var(–cyan)}
+input[type=range]{width:100%;accent-color:var(–cyan)}
+
+/* canvas */
+#cwrap{flex:1;position:relative;overflow:hidden}
+#gc,#pc,#wc{display:block;position:absolute;top:0;left:0}
+#gc{cursor:crosshair}
+#pc,#wc{pointer-events:none;z-index:5}
+
+/* field toggle */
+#ftog{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+display:flex;border:1px solid var(–border);border-radius:6px;overflow:hidden;
+background:rgba(2,12,27,.88);backdrop-filter:blur(12px);z-index:20}
+.ft{padding:5px 13px;font-family:‘Syncopate’,sans-serif;font-size:9px;letter-spacing:.12em;
+cursor:pointer;border:none;background:transparent;color:var(–txt2);transition:all .15s}
+.ft:not(:last-child){border-right:1px solid var(–border)}
+.ft.active{background:rgba(0,210,255,.15);color:var(–cyan)}
+#w2pill{position:absolute;top:12px;right:12px;padding:5px 13px;
+background:rgba(0,255,170,.07);border:1px solid rgba(0,255,170,.28);
+border-radius:20px;font-family:‘Syncopate’,sans-serif;font-size:8px;
+letter-spacing:.12em;color:var(–mag);z-index:20;display:none}
+
+/* right panel */
+#rpanel{width:186px;background:rgba(6,15,32,.97);border-left:1px solid var(–border);
+display:flex;flex-direction:column;padding:12px 11px;gap:8px;
+flex-shrink:0;overflow-y:auto;z-index:30}
+.rp-lbl{font-family:‘Syncopate’,sans-serif;font-size:8px;letter-spacing:.25em;color:var(–txt2);margin-bottom:5px}
+.rp-sep{height:1px;background:var(–border);margin:1px 0}
+.ph-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.ph-k{font-size:12px;color:var(–txt2)}.ph-v{font-family:‘Share Tech Mono’,monospace;font-size:12px;color:var(–cyan)}
+.mag-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.mag-k{font-size:12px;color:rgba(0,255,170,.7)}.mag-v{font-family:‘Share Tech Mono’,monospace;font-size:12px;color:var(–mag)}
+.res-row{margin-bottom:6px}
+.res-top{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+.rl{color:var(–txt)}.rn{font-family:‘Share Tech Mono’,monospace;color:var(–cyan)}
+.res-bar{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
+.res-fill{height:100%;border-radius:2px;transition:width .3s}
+.fcard{background:rgba(0,210,255,.04);border:1px solid rgba(0,210,255,.2);border-radius:6px;padding:8px 11px}
+.fcard-eq{font-family:‘Share Tech Mono’,monospace;font-size:12px;color:var(–cyan);margin-bottom:5px}
+.fcard-desc{font-size:11px;color:var(–txt2);line-height:1.6}
+.hint-box{background:rgba(255,217,61,.04);border:1px solid rgba(255,217,61,.2);
+border-radius:6px;padding:7px 9px;font-size:11px;
+color:rgba(255,217,61,.85);line-height:1.6;display:flex;gap:6px}
+.hi{font-size:13px;flex-shrink:0;margin-top:1px}
+
+/* ctrl bar */
+#cbar{width:100%;height:52px;display:flex;align-items:center;gap:8px;padding:0 14px;
+background:rgba(2,12,27,.93);border-top:1px solid var(–border);flex-shrink:0;z-index:30}
+.cbtn{display:flex;align-items:center;gap:5px;padding:7px 16px;border-radius:3px;
+border:1px solid;cursor:pointer;font-family:‘Syncopate’,sans-serif;
+font-size:10px;letter-spacing:.12em;transition:all .15s;background:transparent;
+clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+#b-run{border-color:var(–lime);color:var(–lime)}
+#b-run:hover{background:rgba(57,255,20,.1)}
+#b-run.running{border-color:var(–gold);color:var(–gold)}
+#b-reset{border-color:var(–txt2);color:var(–txt2)}
+#b-reset:hover{border-color:var(–txt);color:var(–txt)}
+#b-wipe{border-color:rgba(255,45,85,.5);color:rgba(255,45,85,.8)}
+#b-wipe:hover{background:rgba(255,45,85,.1)}
+.csep{flex:1}
+.snav-wrap{display:flex;align-items:center;gap:6px}
+.snav{width:28px;height:28px;border-radius:4px;border:1px solid var(–border);
+background:transparent;color:var(–txt2);cursor:pointer;font-size:11px;
+display:flex;align-items:center;justify-content:center;transition:all .15s}
+.snav:hover{border-color:var(–cyan);color:var(–cyan)}
+#scounter{font-family:‘Share Tech Mono’,monospace;font-size:11px;color:var(–txt2);white-space:nowrap}
+
+/* overlays */
+.gov{position:absolute;inset:0;display:flex;flex-direction:column;
+align-items:center;justify-content:center;gap:13px;
+pointer-events:none;opacity:0;transition:opacity .5s;
+background:rgba(2,8,20,.65);backdrop-filter:blur(8px);z-index:100}
+.gov.show{opacity:1;pointer-events:all}
+.ov-ttl{font-family:‘Syncopate’,sans-serif;font-size:clamp(22px,4vw,48px);
+font-weight:700;letter-spacing:.12em;text-align:center;line-height:1}
+.ov-stars{font-size:28px;letter-spacing:5px}
+.ov-msg{font-size:14px;color:var(–txt2);letter-spacing:.09em;text-align:center}
+.ov-btn{margin-top:5px;padding:11px 36px;font-family:‘Syncopate’,sans-serif;
+font-size:11px;letter-spacing:.2em;border:none;border-radius:3px;cursor:pointer;
+transition:all .2s;clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
+#ov-clear .ov-ttl{color:var(–lime);text-shadow:0 0 30px var(–lime)}
+#ov-clear .ov-btn{color:var(–ink);background:var(–lime)}
+#ov-clear .ov-btn:hover{background:#fff}
+#ov-over .ov-ttl{color:var(–red);text-shadow:0 0 28px var(–red)}
+#ov-over .ov-btn{color:#fff;background:var(–red)}
+#ov-over .ov-btn:hover{background:#ff6080}
+/* Edit info bar */
+#edit-bar{position:absolute;top:12px;left:12px;
+background:rgba(2,12,27,.88);border:1px solid rgba(255,217,61,.35);border-radius:6px;
+padding:6px 14px;font-family:‘Rajdhani’,sans-serif;font-size:12px;
+color:var(–gold);z-index:20;display:none;backdrop-filter:blur(10px)}
+#fflash{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+background:rgba(2,12,27,.92);border:1px solid rgba(0,210,255,.3);
+border-radius:20px;padding:6px 20px;font-family:‘Share Tech Mono’,monospace;
+font-size:12px;color:var(–cyan);pointer-events:none;
+opacity:0;transition:opacity .4s;white-space:nowrap;z-index:40}
+#fflash.show{opacity:1}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(–border);border-radius:2px}
+</style>
+
+</head>
+<body>
+<canvas id="stars-bg"></canvas>
+
+<!-- ══════ TITLE ══════ -->
+
+<div class="screen" id="title-screen">
+  <canvas id="title-deco" style="position:absolute;inset:0;z-index:1;pointer-events:none"></canvas>
+  <div class="t-logo" style="position:relative;z-index:2">MAXWELL<span>QUEST</span></div>
+  <div class="t-sub" style="position:relative;z-index:2">〜 電磁気学パズルアドベンチャー 〜</div>
+  <div class="t-btns">
+    <button class="t-btn t-btn-main" id="t-start">▶ START GAME</button>
+    <button class="t-btn t-btn-sub" id="t-tutorial">🎓 TUTORIAL</button>
+  </div>
+</div>
+
+<!-- ══════ TUTORIAL ══════ -->
+
+<div class="screen hidden" id="tut-screen">
+  <div id="tut-header">
+    <div class="tut-logo">MAXWELL<span>QUEST</span></div>
+    <div class="tut-ttl">TUTORIAL — マクスウェル博士の特別講義</div>
+    <button class="tut-skip" id="tut-skip-btn">SKIP →</button>
+  </div>
+  <div id="tut-body">
+    <div id="tut-canvas-wrap">
+      <canvas id="tut-canvas"></canvas>
+      <canvas id="tut-action-overlay"></canvas>
+      <div id="tut-dialog">
+        <div id="tut-bubble">
+          <div id="tut-avatar">🧑‍🔬<span class="tut-av-glasses">🥼</span></div>
+          <div id="tut-text-area">
+            <div id="tut-speaker">MAXWELL博士</div>
+            <div id="tut-msg">...</div>
+            <div id="tut-action-hint"></div>
+          </div>
+        </div>
+        <div id="tut-controls">
+          <div id="tut-progress"></div>
+          <button id="tut-next-btn">NEXT ▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MAP ══════ -->
+
+<div class="screen hidden" id="map-screen">
+  <div class="map-hdr">
+    <div class="map-logo">MAXWELL<span>QUEST</span></div>
+    <div class="map-sub">WORLD SELECT</div>
+    <button class="map-back" id="map-back">◀ TITLE</button>
+  </div>
+  <div id="map-wrap">
+    <svg id="map-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="gc1"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="gc2"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <style>
+          .fa{stroke-dasharray:7 16;animation:fp 1.1s linear infinite}
+          .fb{stroke-dasharray:7 16;animation:fp 1.5s linear infinite}
+          @keyframes fp{to{stroke-dashoffset:-23}}
+        </style>
+      </defs>
+      <rect x="28" y="55" width="292" height="410" rx="10" fill="rgba(0,210,255,.03)" stroke="rgba(0,210,255,.13)" stroke-width="1"/>
+      <rect x="354" y="55" width="292" height="410" rx="10" fill="rgba(0,255,170,.03)" stroke="rgba(0,255,170,.13)" stroke-width="1"/>
+      <rect x="680" y="55" width="292" height="410" rx="10" fill="rgba(191,95,255,.03)" stroke="rgba(191,95,255,.1)" stroke-width="1"/>
+      <text x="174" y="83" fill="#00d2ff" font-family="Syncopate,sans-serif" font-size="12" letter-spacing="3" text-anchor="middle">WORLD 1</text>
+      <text x="174" y="100" fill="rgba(0,210,255,.55)" font-family="Rajdhani,sans-serif" font-size="11" text-anchor="middle">ELECTRIC JUNGLE</text>
+      <text x="500" y="83" fill="#00ffaa" font-family="Syncopate,sans-serif" font-size="12" letter-spacing="3" text-anchor="middle">WORLD 2</text>
+      <text x="500" y="100" fill="rgba(0,255,170,.55)" font-family="Rajdhani,sans-serif" font-size="11" text-anchor="middle">MAGNETIC MAZE</text>
+      <text x="826" y="83" fill="rgba(191,95,255,.4)" font-family="Syncopate,sans-serif" font-size="12" letter-spacing="3" text-anchor="middle">WORLD 3</text>
+      <text x="826" y="100" fill="rgba(191,95,255,.32)" font-family="Rajdhani,sans-serif" font-size="11" text-anchor="middle">WAVE RIDER</text>
+      <!-- W1 paths -->
+      <line x1="174" y1="196" x2="174" y2="258" stroke="#00d2ff" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="174" y1="196" x2="174" y2="258" class="fa" stroke="#00d2ff" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <line x1="174" y1="302" x2="126" y2="368" stroke="#00d2ff" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="174" y1="302" x2="126" y2="368" class="fa" stroke="#00d2ff" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <line x1="174" y1="302" x2="222" y2="368" stroke="#00d2ff" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="174" y1="302" x2="222" y2="368" class="fa" stroke="#00d2ff" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <path d="M288,415 Q322,445 354,415" stroke="rgba(0,255,170,.25)" stroke-width="1.5" fill="none" stroke-dasharray="6,12"/>
+      <!-- W2 paths -->
+      <line x1="500" y1="196" x2="500" y2="258" stroke="#00ffaa" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="500" y1="196" x2="500" y2="258" class="fb" stroke="#00ffaa" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <line x1="500" y1="302" x2="452" y2="368" stroke="#00ffaa" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="500" y1="302" x2="452" y2="368" class="fb" stroke="#00ffaa" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <line x1="500" y1="302" x2="548" y2="368" stroke="#00ffaa" stroke-width="1.5" stroke-opacity=".3"/>
+      <line x1="500" y1="302" x2="548" y2="368" class="fb" stroke="#00ffaa" stroke-width="1.5" fill="none" stroke-opacity=".7"/>
+      <path d="M614,415 Q648,445 680,415" stroke="rgba(191,95,255,.2)" stroke-width="1.5" fill="none" stroke-dasharray="6,12"/>
+      <!-- W3 dim -->
+      <line x1="826" y1="196" x2="826" y2="258" stroke="rgba(191,95,255,.15)" stroke-width="1" stroke-dasharray="4,8"/>
+      <line x1="826" y1="302" x2="778" y2="368" stroke="rgba(191,95,255,.12)" stroke-width="1" stroke-dasharray="4,8"/>
+      <line x1="826" y1="302" x2="874" y2="368" stroke="rgba(191,95,255,.12)" stroke-width="1" stroke-dasharray="4,8"/>
+      <!-- W1 nodes -->
+      <g class="snode" data-idx="0">
+        <polygon points="174,138 204,155 204,189 174,206 144,189 144,155" fill="rgba(0,210,255,.14)" stroke="#00d2ff" stroke-width="2" filter="url(#gc1)"/>
+        <polygon points="174,144 198,158 198,186 174,200 150,186 150,158" fill="rgba(0,20,40,.6)"/>
+        <text x="174" y="168" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="#00d2ff">1-1</text>
+        <text x="174" y="185" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#5a9ab8">CLEAR</text>
+        <text x="174" y="217" text-anchor="middle" font-size="11" fill="#ffd93d" id="stars-0">★★★</text>
+      </g>
+      <g class="snode" data-idx="1">
+        <polygon points="174,258 204,275 204,309 174,326 144,309 144,275" fill="rgba(0,210,255,.1)" stroke="rgba(0,210,255,.6)" stroke-width="1.5"/>
+        <polygon points="174,264 198,278 198,306 174,320 150,306 150,278" fill="rgba(0,20,40,.6)"/>
+        <text x="174" y="288" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="#00d2ff">1-2</text>
+        <text x="174" y="305" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#5a9ab8">PLAY</text>
+        <text x="174" y="337" text-anchor="middle" font-size="11" fill="#ffd93d" id="stars-1">☆☆☆</text>
+      </g>
+      <g class="snode" data-idx="2">
+        <polygon points="126,368 152,383 152,413 126,428 100,413 100,383" fill="rgba(0,210,255,.08)" stroke="rgba(0,210,255,.48)" stroke-width="1.5"/>
+        <polygon points="126,374 146,385 146,411 126,422 106,411 106,385" fill="rgba(0,20,40,.6)"/>
+        <text x="126" y="396" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="12" fill="#00d2ff">1-3</text>
+        <text x="126" y="412" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="8" fill="#3a7890">MAZE</text>
+        <text x="126" y="440" text-anchor="middle" font-size="10" fill="#ffd93d" id="stars-2">☆☆☆</text>
+      </g>
+      <g class="snode locked" data-idx="-1">
+        <polygon points="222,368 248,383 248,413 222,428 196,413 196,383" fill="rgba(255,217,61,.04)" stroke="rgba(255,217,61,.28)" stroke-width="1.5"/>
+        <text x="222" y="396" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="11" fill="#ffd93d">BOSS</text>
+        <text x="222" y="412" text-anchor="middle" font-size="13">🔒</text>
+      </g>
+      <!-- W2 nodes -->
+      <g class="snode" data-idx="3">
+        <polygon points="500,138 530,155 530,189 500,206 470,189 470,155" fill="rgba(0,255,170,.12)" stroke="#00ffaa" stroke-width="2" filter="url(#gc2)"/>
+        <polygon points="500,144 524,158 524,186 500,200 476,186 476,158" fill="rgba(0,20,15,.65)"/>
+        <text x="500" y="168" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="#00ffaa">2-1</text>
+        <text x="500" y="185" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#2a8060">NEW!</text>
+        <text x="500" y="217" text-anchor="middle" font-size="11" fill="#555" id="stars-3">☆☆☆</text>
+      </g>
+      <g class="snode" data-idx="4">
+        <polygon points="500,258 530,275 530,309 500,326 470,309 470,275" fill="rgba(0,255,170,.08)" stroke="rgba(0,255,170,.52)" stroke-width="1.5"/>
+        <polygon points="500,264 524,278 524,306 500,320 476,306 476,278" fill="rgba(0,20,15,.65)"/>
+        <text x="500" y="288" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="#00ffaa">2-2</text>
+        <text x="500" y="305" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="9" fill="#1a6040">NEW!</text>
+        <text x="500" y="337" text-anchor="middle" font-size="11" fill="#555" id="stars-4">☆☆☆</text>
+      </g>
+      <g class="snode" data-idx="5">
+        <polygon points="452,368 478,383 478,413 452,428 426,413 426,383" fill="rgba(0,255,170,.06)" stroke="rgba(0,255,170,.38)" stroke-width="1.5"/>
+        <polygon points="452,374 472,385 472,411 452,422 432,411 432,385" fill="rgba(0,20,15,.65)"/>
+        <text x="452" y="396" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="12" fill="#00ffaa">2-3</text>
+        <text x="452" y="412" text-anchor="middle" font-family="Rajdhani,sans-serif" font-size="8" fill="#1a5035">VSELECTOR</text>
+        <text x="452" y="440" text-anchor="middle" font-size="10" fill="#555" id="stars-5">☆☆☆</text>
+      </g>
+      <g class="snode locked" data-idx="-1">
+        <polygon points="548,368 574,383 574,413 548,428 522,413 522,383" fill="rgba(255,217,61,.03)" stroke="rgba(255,217,61,.22)" stroke-width="1.5"/>
+        <text x="548" y="396" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="11" fill="rgba(255,217,61,.4)">BOSS</text>
+        <text x="548" y="412" text-anchor="middle" font-size="13">🔒</text>
+      </g>
+      <!-- W3 locked -->
+      <g opacity=".22"><polygon points="826,138 856,155 856,189 826,206 796,189 796,155" fill="rgba(191,95,255,.04)" stroke="rgba(191,95,255,.28)" stroke-width="1.5"/>
+        <text x="826" y="175" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="rgba(191,95,255,.45)">3-1</text><text x="826" y="192" text-anchor="middle" font-size="14">🔒</text></g>
+      <g opacity=".14"><polygon points="826,258 856,275 856,309 826,326 796,309 796,275" fill="rgba(191,95,255,.03)" stroke="rgba(191,95,255,.2)" stroke-width="1"/>
+        <text x="826" y="295" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="13" fill="rgba(191,95,255,.3)">3-2</text></g>
+      <g opacity=".1"><polygon points="778,368 804,383 804,413 778,428 752,413 752,383" fill="none" stroke="rgba(191,95,255,.25)" stroke-width="1"/>
+        <text x="778" y="402" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="12" fill="rgba(191,95,255,.25)">3-3</text></g>
+      <g opacity=".1"><polygon points="874,368 900,383 900,413 874,428 848,413 848,383" fill="none" stroke="rgba(255,217,61,.2)" stroke-width="1"/>
+        <text x="874" y="402" text-anchor="middle" font-family="Syncopate,sans-serif" font-size="11" fill="rgba(255,217,61,.25)">BOSS</text></g>
+    </svg>
+    <div class="node-tip" id="ntip">
+      <div class="nt-id" id="nt-id">STAGE 1-1</div>
+      <div class="nt-name" id="nt-name">—</div>
+      <div class="nt-eq" id="nt-eq">—</div>
+      <div class="nt-stars" id="nt-stars">☆☆☆</div>
+      <button class="nt-btn" id="nt-play">▶ PLAY</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ GAME ══════ -->
+
+<div class="screen hidden" id="game-screen">
+  <div id="ghdr">
+    <div class="gh-logo">MW<span>Q</span></div>
+    <div class="gh-mid">
+      <div class="gh-title" id="g-title">1-1: はじめての斥力</div>
+      <div class="gh-world" id="g-world">WORLD 1 — ELECTRIC JUNGLE</div>
+    </div>
+    <div class="gh-stats">
+      <div class="gsi"><div class="gsi-lbl">SCORE</div><div class="gsi-val" id="g-score">0</div></div>
+      <div class="gsi"><div class="gsi-lbl">BEST</div><div class="gsi-val" id="g-best">—</div></div>
+    </div>
+    <button class="gh-mapbtn" id="b-tomap">◀ MAP</button>
+  </div>
+  <div id="gbody">
+    <div id="tbar">
+      <span class="tb-sec">FIELD</span>
+      <button class="tbtn tpos active" id="t-pos"><span class="ti">⊕</span><span>正電荷</span></button>
+      <button class="tbtn tneg" id="t-neg"><span class="ti">⊖</span><span>負電荷</span></button>
+      <div class="tsep"></div>
+      <span class="tb-sec">WIRE</span>
+      <button class="tbtn twire" id="t-wire"><span class="ti">⇒</span><span>電流→</span></button>
+      <button class="tbtn twirer" id="t-wirer"><span class="ti">⇐</span><span>電流←</span></button>
+      <div class="tsep"></div>
+      <span class="tb-sec">EDIT</span>
+      <button class="tbtn tedit" id="t-edit"><span class="ti">✥</span><span>移動/削除</span></button>
+      <div class="tsep"></div>
+      <span class="tb-sec">STRENGTH</span>
+      <div class="mag-ctrl">
+        <div class="mag-lbl">Mag <span id="mag-disp">3</span></div>
+        <input type="range" id="mag-sl" min="1" max="6" value="3">
+      </div>
+    </div>
+    <div id="cwrap">
+      <canvas id="gc"></canvas>
+      <canvas id="pc"></canvas>
+      <canvas id="wc"></canvas>
+      <div id="ftog">
+        <button class="ft" id="ft-off">OFF</button>
+        <button class="ft active" id="ft-vec">E VECTOR</button>
+        <button class="ft" id="ft-str">E STREAM</button>
+        <button class="ft" id="ft-mag">B FIELD</button>
+      </div>
+      <div id="w2pill">⊙ MAGNETIC FIELD ACTIVE</div>
+      <div id="edit-bar">✥ EDIT MODE — ドラッグで移動 | 右クリックで削除</div>
+      <div class="gov" id="ov-clear">
+        <div class="ov-ttl">STAGE CLEAR</div>
+        <div class="ov-stars" id="ov-stars">★★★</div>
+        <div class="ov-msg" id="ov-cmsg">ゴール到達！</div>
+        <button class="ov-btn" id="b-next">NEXT STAGE ▶</button>
+      </div>
+      <div class="gov" id="ov-over">
+        <div class="ov-ttl">GAME OVER</div>
+        <div class="ov-msg" id="ov-omsg">—</div>
+        <button class="ov-btn" id="b-retry">↺ RETRY (配置を保持)</button>
+      </div>
+      <div id="fflash"></div>
+    </div>
+    <div id="rpanel">
+      <div class="rp-lbl">QBIT STATUS</div>
+      <div class="ph-row"><span class="ph-k">電荷</span><span class="ph-v" id="ph-chg" style="color:var(--red)">+e</span></div>
+      <div class="ph-row"><span class="ph-k">速さ</span><span class="ph-v" id="ph-spd">0.0</span></div>
+      <div class="ph-row"><span class="ph-k">|F| 合力</span><span class="ph-v" id="ph-f">0.0</span></div>
+      <div class="mag-row"><span class="mag-k">Bz 磁場</span><span class="mag-v" id="ph-bz">0.00</span></div>
+      <div class="rp-sep"></div>
+      <div class="rp-lbl">リソース</div>
+      <div class="res-row">
+        <div class="res-top"><span class="rl">正電荷</span><span class="rn" id="r-posn">3/3</span></div>
+        <div class="res-bar"><div class="res-fill" id="r-posb" style="background:var(--red)"></div></div>
+      </div>
+      <div class="res-row">
+        <div class="res-top"><span class="rl">負電荷</span><span class="rn" id="r-negn">3/3</span></div>
+        <div class="res-bar"><div class="res-fill" id="r-negb" style="background:#3a8fff"></div></div>
+      </div>
+      <div class="res-row">
+        <div class="res-top"><span class="rl">電流線</span><span class="rn" id="r-wirn">3/3</span></div>
+        <div class="res-bar"><div class="res-fill" id="r-wirb" style="background:var(--mag)"></div></div>
+      </div>
+      <div class="rp-sep"></div>
+      <div class="rp-lbl">物理の式</div>
+      <div class="fcard">
+        <div class="fcard-eq" id="fc-eq">F = qE</div>
+        <div class="fcard-desc" id="fc-desc">電場 E 中の電荷 q に働く力。</div>
+      </div>
+      <div class="rp-sep"></div>
+      <div class="hint-box"><span class="hi">💡</span><span id="hint-t">—</span></div>
+    </div>
+  </div>
+  <div id="cbar">
+    <button class="cbtn" id="b-run">▶  スタート</button>
+    <button class="cbtn" id="b-reset">↺  リセット</button>
+    <button class="cbtn" id="b-wipe">✕  全消去</button>
+    <div class="csep"></div>
+    <div class="snav-wrap">
+      <button class="snav" id="b-prev">◀</button>
+      <span id="scounter">1 / 6</span>
+      <button class="snav" id="b-snext">▶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  MAXWELL QUEST v4
+// ═══════════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const lerp = (a,b,t) => a+(b-a)*t;
+const clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+
+// ── STARFIELD ───────────────────────────────────────────────────────
+;(()=>{
+  const c=$('stars-bg'),cx=c.getContext('2d');
+  const rs=()=>{c.width=innerWidth;c.height=innerHeight};rs();addEventListener('resize',rs);
+  const s=Array.from({length:220},()=>({x:Math.random(),y:Math.random(),r:Math.random()*.75+.18,s:Math.random()*.4+.8,t:Math.random()*Math.PI*2}));
+  (function d(){cx.clearRect(0,0,c.width,c.height);s.forEach(p=>{p.t+=.009*p.s;cx.globalAlpha=.3+Math.sin(p.t)*.18;cx.fillStyle='#b8d4f0';cx.beginPath();cx.arc(p.x*c.width,p.y*c.height,p.r,0,Math.PI*2);cx.fill();});cx.globalAlpha=1;requestAnimationFrame(d);})();
+})();
+
+// ── TITLE DECO ──────────────────────────────────────────────────────
+;(()=>{
+  const c=$('title-deco'),cx=c.getContext('2d');
+  c.width=innerWidth;c.height=innerHeight;
+  addEventListener('resize',()=>{c.width=innerWidth;c.height=innerHeight;});
+  const pts=Array.from({length:5},(_,i)=>({x:(.1+i*.2)*innerWidth,y:.5*innerHeight+Math.sin(i)*60,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.15,q:i%2?1:-1}));
+  (function d(){cx.clearRect(0,0,c.width,c.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;});
+    for(let i=0;i<c.width;i+=65)for(let j=0;j<c.height;j+=65){
+      let ex=0,ey=0;pts.forEach(p=>{const dx=i-p.x,dy=j-p.y,r2=dx*dx+dy*dy+400;const m=p.q*650/r2,r=Math.sqrt(r2);ex+=m*dx/r;ey+=m*dy/r;});
+      const mag=Math.hypot(ex,ey),len=Math.min(20,mag*.35);if(len<1)continue;
+      cx.strokeStyle='rgba(0,210,255,.06)';cx.lineWidth=1;cx.beginPath();cx.moveTo(i-ex/mag*len*.5,j-ey/mag*len*.5);cx.lineTo(i+ex/mag*len*.5,j+ey/mag*len*.5);cx.stroke();
+    }requestAnimationFrame(d);})();
+})();
+
+// ── SCREEN MANAGER ──────────────────────────────────────────────────
+const SCREENS={title:'title-screen',tut:'tut-screen',map:'map-screen',game:'game-screen'};
+let curScreen='title';
+function goTo(name){
+  Object.values(SCREENS).forEach(id=>$(id).classList.add('hidden'));
+  $(SCREENS[name]).classList.remove('hidden');
+  curScreen=name;
+  if(name==='map') refreshMapStars();
+  if(name==='tut') startTutorial();
+}
+$('t-start').addEventListener('click',()=>goTo('map'));
+$('t-tutorial').addEventListener('click',()=>goTo('tut'));
+$('map-back').addEventListener('click',()=>goTo('title'));
+$('b-tomap').addEventListener('click',()=>{stopSim();goTo('map');});
+
+// ═══════════════════════════════════════════════════════════════════
+//  TUTORIAL SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+const TUT_STEPS = [
+  {
+    msg: 'こんにちは！わしはマクスウェル博士じゃ。電磁気学の父と呼ばれておる。このゲームでは、わしの大発見「マクスウェル方程式」を体験しながら学べるのじゃ！',
+    hint: '',
+    action: null,
+    demo: 'intro',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: 'これが主人公「Qbit（キュービット）」じゃ。荷電粒子を模したキャラクターで、電荷 +e を持っておる。電荷とは、電気の源となる性質じゃ。',
+    hint: '',
+    action: null,
+    demo: 'qbit',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: '左のツールから「⊕ 正電荷」を選んで、フィールドをクリックして置いてみなさい！電荷を置くと、周囲に「電場」という見えない力のフィールドが生まれるのじゃ。',
+    hint: '👆 フィールドをクリックして電荷を配置してください',
+    action: 'place_charge',
+    demo: 'charge_place',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: 'よくできた！矢印が電場の向きを示しておる。同符号の電荷（+と+）は反発し合い、異符号（+と−）は引き合う。これがクーロンの法則じゃ！ F = kq₁q₂/r²',
+    hint: '',
+    action: null,
+    demo: 'field_arrows',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: '電流ワイヤーを引くと磁場も生まれる。これがアンペールの法則 ∮B·dl = μ₀I じゃ。磁場の中を動く Qbit には「ローレンツ力」が働いて軌道が曲がるのじゃよ！',
+    hint: '',
+    action: null,
+    demo: 'wire',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: '下の「▶ スタート」ボタンを押すと物理シミュレーションが始まる！Qbit に働く力を計算して動き出すのじゃ。緑の六角形「GOAL」まで導けばクリアじゃ！',
+    hint: '🎯 右下の GOAL を目指してQbitを動かそう！',
+    action: null,
+    demo: 'goal',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: '配置した電荷や電流は「✥ 移動/削除」ツールで後から編集できるぞ。ドラッグで移動、右クリックで削除じゃ。失敗しても前回の配置が保持されてリトライできる！',
+    hint: '',
+    action: null,
+    demo: 'edit',
+    nextLabel: 'NEXT ▶'
+  },
+  {
+    msg: 'これで準備完了じゃ！WORLD 1から挑戦してみなさい。ゲームの中でわしがヒントをくれるぞ。では、行ってらっしゃい！電磁気学の世界を楽しんでほしいのじゃ。',
+    hint: '',
+    action: null,
+    demo: 'finish',
+    nextLabel: 'START GAME! ▶'
+  }
+];
+
+let tutStep=0, tutCanvas=null, tutCtx=null, tutAnimId=null;
+let tutPlacedCharge=false, tutDemoCharge={x:.62,y:.45};
+let tutQbitAngle=0, tutWirePhase=0;
+
+function startTutorial(){
+  tutStep=0; tutPlacedCharge=false;
+  const wrap=$('tut-canvas-wrap');
+  tutCanvas=$('tut-canvas');
+  tutCtx=tutCanvas.getContext('2d');
+  const oc=$('tut-action-overlay');
+  oc.width=wrap.clientWidth; oc.height=wrap.clientHeight;
+  tutCanvas.width=wrap.clientWidth; tutCanvas.height=wrap.clientHeight;
+  renderTutStep(0);
+  if(tutAnimId) cancelAnimationFrame(tutAnimId);
+  (function tutLoop(){
+    drawTutDemo();
+    tutAnimId=requestAnimationFrame(tutLoop);
+  })();
+}
+
+function renderTutStep(idx){
+  const s=TUT_STEPS[idx];
+  $('tut-msg').textContent=s.msg;
+  $('tut-action-hint').textContent=s.hint;
+  $('tut-next-btn').textContent=s.nextLabel;
+  $('tut-next-btn').disabled = s.action==='place_charge' && !tutPlacedCharge;
+  // dots
+  const pd=$('tut-progress'); pd.innerHTML='';
+  TUT_STEPS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='tut-dot'+(i===idx?' active':i<idx?' done':'');
+    pd.appendChild(d);
+  });
+}
+
+$('tut-next-btn').addEventListener('click',()=>{
+  if(tutStep<TUT_STEPS.length-1){tutStep++;renderTutStep(tutStep);}
+  else{cancelAnimationFrame(tutAnimId);tutAnimId=null;goTo('map');}
+});
+$('tut-skip-btn').addEventListener('click',()=>{
+  cancelAnimationFrame(tutAnimId);tutAnimId=null;goTo('map');
+});
+
+// Tutorial canvas interaction for step 2 (place_charge)
+$('tut-canvas').addEventListener('click',e=>{
+  if(TUT_STEPS[tutStep].action!=='place_charge') return;
+  const r=tutCanvas.getBoundingClientRect();
+  const mx=(e.clientX-r.left)/tutCanvas.width, my=(e.clientY-r.top)/tutCanvas.height;
+  tutDemoCharge={x:mx,y:my};
+  tutPlacedCharge=true;
+  $('tut-next-btn').disabled=false;
+  $('tut-action-hint').textContent='✅ 電荷を配置しました！NEXT で続けよう。';
+});
+
+function drawTutDemo(){
+  if(!tutCtx) return;
+  const W=tutCanvas.width, H=tutCanvas.height;
+  const cx=tutCtx; cx.clearRect(0,0,W,H);
+  tutQbitAngle+=0.018; tutWirePhase+=0.025;
+
+  const demo=TUT_STEPS[tutStep].demo;
+  // dot grid always
+  cx.fillStyle='rgba(0,210,255,.05)';
+  for(let x=0;x<W;x+=40)for(let y=0;y<H;y+=40){cx.beginPath();cx.arc(x,y,1,0,Math.PI*2);cx.fill();}
+
+  const qx=W*.32, qy=H*.45;
+  const gx=W*.72, gy=H*.45;
+
+  if(demo==='intro'){
+    // Animated field lines background
+    const ts=Date.now()/1000;
+    for(let i=0;i<8;i++){
+      const a=i/8*Math.PI*2+ts*.15;
+      const r=W*.28;
+      cx.strokeStyle=`rgba(0,210,255,${.04+.03*Math.sin(ts+i)})`;
+      cx.lineWidth=1;
+      cx.beginPath();cx.arc(W*.5,H*.4,r+i*18,a,a+Math.PI*.7);cx.stroke();
+    }
+    // Title text
+    cx.fillStyle='rgba(0,210,255,.5)';cx.font='bold 24px Syncopate,sans-serif';cx.textAlign='center';
+    cx.fillText('MAXWELL QUEST',W*.5,H*.25);
+    cx.font='14px Rajdhani,sans-serif';cx.fillStyle='rgba(255,217,61,.7)';
+    cx.fillText('電磁気学パズルアドベンチャー',W*.5,H*.32);
+    // Demo particles orbiting
+    for(let i=0;i<4;i++){
+      const a=tutQbitAngle+i*Math.PI*.5;
+      const px=W*.5+Math.cos(a)*W*.18, py=H*.42+Math.sin(a)*H*.2;
+      drawTutQbit(cx,px,py,14,i%2===0);
+    }
+  }
+  else if(demo==='qbit'){
+    drawTutGoal(cx,gx,gy,20);
+    // big qbit with annotations
+    drawTutQbit(cx,qx,qy,20,true);
+    cx.fillStyle='rgba(255,107,138,.9)';cx.font='bold 13px Rajdhani,sans-serif';cx.textAlign='left';
+    cx.fillText('Qbit  （+e）',qx+26,qy-5);
+    cx.fillStyle='rgba(0,210,255,.6)';cx.font='11px Share Tech Mono,monospace';
+    cx.fillText('charge = +1',qx+26,qy+12);
+    cx.fillText('mass = 1',qx+26,qy+27);
+    // speed arrow
+    cx.strokeStyle='rgba(57,255,20,.7)';cx.lineWidth=2;
+    cx.beginPath();cx.moveTo(qx+22,qy);cx.lineTo(qx+100,qy);
+    cx.moveTo(qx+88,qy-7);cx.lineTo(qx+100,qy);cx.lineTo(qx+88,qy+7);cx.stroke();
+    cx.fillStyle='rgba(57,255,20,.8)';cx.font='11px Rajdhani,sans-serif';cx.textAlign='center';
+    cx.fillText('GOAL へ導こう！',qx+165,qy+4);
+    drawTutGoal(cx,qx+220,qy,18);
+  }
+  else if(demo==='charge_place'){
+    // Show placed charge if any
+    if(tutPlacedCharge){
+      const cx2=tutDemoCharge.x*W, cy2=tutDemoCharge.y*H;
+      drawTutCharge(cx,cx2,cy2,12,true);
+      // field arrows
+      for(let i=0;i<W;i+=55)for(let j=0;j<H;j+=55){
+        const dx=i-cx2,dy=j-cy2,r2=dx*dx+dy*dy;if(r2<100)continue;
+        const r=Math.sqrt(r2),m=600/r2;
+        const ex=m*dx/r,ey=m*dy/r,mag=Math.hypot(ex,ey);
+        const len=Math.min(18,3+Math.log1p(mag)*2.5);const nx=ex/mag,ny=ey/mag;
+        const t=clamp(Math.log1p(mag)/7,0,1);
+        cx.save();cx.translate(i,j);cx.globalAlpha=.2+t*.35;
+        cx.strokeStyle=`rgb(${lerp(30,255,t)|0},${lerp(100,40,t)|0},${lerp(220,60,t)|0})`;cx.lineWidth=1.2;
+        cx.beginPath();cx.moveTo(-nx*len*.45,-ny*len*.45);cx.lineTo(nx*len*.45,ny*len*.45);cx.stroke();
+        cx.restore();
+      }
+    } else {
+      // pulsing click hint
+      const ts=Date.now()/1000;
+      const pr=20+Math.sin(ts*3)*5;
+      cx.strokeStyle=`rgba(0,210,255,${.4+Math.sin(ts*3)*.3})`;cx.lineWidth=2;
+      cx.setLineDash([5,5]);cx.beginPath();cx.arc(W*.5,H*.38,pr,0,Math.PI*2);cx.stroke();cx.setLineDash([]);
+      cx.fillStyle='rgba(0,210,255,.7)';cx.font='12px Rajdhani,sans-serif';cx.textAlign='center';
+      cx.fillText('ここをクリック！',W*.5,H*.52);
+      // show tool hint
+      drawTutCharge(cx,W*.15,H*.38,12,true);
+      cx.fillStyle='rgba(255,45,85,.7)';cx.font='11px Rajdhani,sans-serif';cx.textAlign='center';
+      cx.fillText('⊕ 正電荷ツールを選んで',W*.15,H*.54);cx.fillText('クリックで設置',W*.15,H*.66);
+    }
+    drawTutQbit(cx,qx,qy,14,true);
+  }
+  else if(demo==='field_arrows'){
+    // Show field from two charges
+    const c1={x:W*.28,y:H*.4,q:3},c2={x:W*.65,y:H*.45,q:-2};
+    [c1,c2].forEach(c=>{
+      for(let i=0;i<W;i+=52)for(let j=0;j<H;j+=52){
+        let ex=0,ey=0;[c1,c2].forEach(cc=>{const dx=i-cc.x,dy=j-cc.y,r2=dx*dx+dy*dy;if(r2<64)return;const r=Math.sqrt(r2),m=500*cc.q/r2;ex+=m*dx/r;ey+=m*dy/r;});
+        const mag=Math.hypot(ex,ey);if(mag<.01)continue;
+        const len=Math.min(18,3+Math.log1p(mag)*2.5);const nx=ex/mag,ny=ey/mag;
+        const t=clamp(Math.log1p(mag)/7,0,1);
+        cx.save();cx.translate(i,j);cx.globalAlpha=.18+t*.38;
+        cx.strokeStyle=`rgb(${lerp(30,255,t)|0},${lerp(100,40,t)|0},${lerp(220,60,t)|0})`;cx.lineWidth=1.2;
+        cx.beginPath();cx.moveTo(-nx*len*.45,-ny*len*.45);cx.lineTo(nx*len*.45,ny*len*.45);cx.stroke();cx.restore();
+      }
+    });
+    drawTutCharge(cx,c1.x,c1.y,14,true);
+    drawTutCharge(cx,c2.x,c2.y,14,false);
+    cx.fillStyle='rgba(255,255,255,.55)';cx.font='12px Share Tech Mono,monospace';cx.textAlign='center';
+    cx.fillText('F = kq₁q₂/r²',W*.5,H*.18);
+    cx.fillStyle='rgba(0,210,255,.5)';cx.font='11px Rajdhani,sans-serif';
+    cx.fillText('電場線 — 密度＝電場の強さ',W*.5,H*.1);
+  }
+  else if(demo==='wire'){
+    // Show wire with circular B field
+    const wx1=W*.25,wy1=H*.5,wx2=W*.72,wy2=H*.5;
+    const ts=Date.now()/1000;
+    // B field rings
+    for(let ri=1;ri<=5;ri++){
+      const baseR=ri*30;const phase=ts*1.3;
+      cx.save();cx.translate((wx1+wx2)/2,(wy1+wy2)/2);
+      cx.strokeStyle=`rgba(0,255,170,${.12/ri+.04})`;cx.lineWidth=1.5;
+      cx.beginPath();cx.arc(0,0,baseR,phase%(Math.PI*2),phase%(Math.PI*2)+Math.PI*1.6);cx.stroke();cx.restore();
+    }
+    // wire
+    cx.strokeStyle='#00ffaa';cx.lineWidth=3.5;cx.shadowColor='#00ffaa';cx.shadowBlur=10;
+    cx.beginPath();cx.moveTo(wx1,wy1);cx.lineTo(wx2,wy2);cx.stroke();cx.shadowBlur=0;
+    // arrow
+    cx.fillStyle='#00ffaa';cx.beginPath();cx.moveTo(W*.55,H*.5-12);cx.lineTo(W*.62,H*.5);cx.lineTo(W*.55,H*.5+12);cx.fill();
+    cx.fillStyle='rgba(0,255,170,.8)';cx.font='11px Share Tech Mono,monospace';cx.textAlign='center';
+    cx.fillText('∮B·dl = μ₀I',W*.5,H*.2);
+    cx.font='11px Rajdhani,sans-serif';cx.fillStyle='rgba(255,255,255,.5)';
+    cx.fillText('電流 → 磁場 → Qbit の軌道が曲がる',W*.5,H*.12);
+    // qbit curving
+    const qangle=tutQbitAngle*2;
+    const qpx=W*.35+Math.cos(qangle)*W*.2, qpy=H*.3+Math.sin(qangle)*H*.25;
+    drawTutQbit(cx,qpx,qpy,12,true);
+  }
+  else if(demo==='goal'){
+    drawTutGoal(cx,W*.72,H*.44,24);
+    drawTutQbit(cx,qx,qy,14,true);
+    // trail hint
+    cx.strokeStyle='rgba(0,210,255,.4)';cx.lineWidth=1.5;cx.setLineDash([4,6]);
+    cx.beginPath();cx.moveTo(qx+16,qy);cx.quadraticCurveTo(W*.5,H*.28,W*.72-26,H*.44);cx.stroke();cx.setLineDash([]);
+    cx.fillStyle='rgba(255,217,61,.8)';cx.font='13px Rajdhani,sans-serif';cx.textAlign='center';
+    cx.fillText('▶ スタートで動き出す！',W*.5,H*.2);
+    cx.fillStyle='rgba(57,255,20,.7)';cx.font='12px Share Tech Mono,monospace';
+    cx.fillText('GOALに入ればクリア',W*.5,H*.12);
+  }
+  else if(demo==='edit'){
+    // show charges with edit highlight
+    const ec1={x:W*.35,y:H*.4};const ec2={x:W*.55,y:H*.5};
+    drawTutCharge(cx,ec1.x,ec1.y,12,true);
+    drawTutCharge(cx,ec2.x,ec2.y,12,false);
+    // selected highlight on ec1
+    const ts=Date.now()/1000;
+    cx.strokeStyle=`rgba(255,217,61,${.6+Math.sin(ts*3)*.3})`;cx.lineWidth=2;cx.setLineDash([4,4]);
+    cx.beginPath();cx.arc(ec1.x,ec1.y,22,0,Math.PI*2);cx.stroke();cx.setLineDash([]);
+    // drag arrow
+    cx.strokeStyle='rgba(255,217,61,.7)';cx.lineWidth=2;
+    cx.beginPath();cx.moveTo(ec1.x+22,ec1.y);cx.lineTo(ec1.x+60,ec1.y-20);cx.stroke();
+    cx.fillStyle='rgba(255,217,61,.7)';cx.beginPath();cx.moveTo(ec1.x+60,ec1.y-20);cx.lineTo(ec1.x+50,ec1.y-28);cx.lineTo(ec1.x+66,ec1.y-30);cx.fill();
+    cx.fillStyle='rgba(255,217,61,.8)';cx.font='12px Rajdhani,sans-serif';cx.textAlign='center';
+    cx.fillText('ドラッグで移動',ec1.x+80,ec1.y-30);
+    // right-click hint
+    cx.strokeStyle='rgba(255,45,85,.6)';cx.lineWidth=1.5;cx.setLineDash([3,4]);
+    cx.beginPath();cx.arc(ec2.x,ec2.y,20,0,Math.PI*2);cx.stroke();cx.setLineDash([]);
+    cx.fillStyle='rgba(255,45,85,.7)';cx.font='12px Rajdhani,sans-serif';cx.textAlign='center';
+    cx.fillText('右クリックで削除',ec2.x+30,ec2.y-26);
+    drawTutQbit(cx,qx,qy,12,true);
+  }
+  else if(demo==='finish'){
+    const ts=Date.now()/1000;
+    for(let i=0;i<8;i++){
+      const a=tutQbitAngle*1.5+i*Math.PI*.25;
+      const r=W*.22,px=W*.5+Math.cos(a)*r,py=H*.38+Math.sin(a)*r*.6;
+      drawTutQbit(cx,px,py,10+Math.sin(a+ts)*3,i%2===0);
+    }
+    drawTutGoal(cx,W*.5,H*.38,28);
+    cx.fillStyle='rgba(57,255,20,.8)';cx.font='bold 18px Syncopate,sans-serif';cx.textAlign='center';
+    cx.fillText('準備完了！',W*.5,H*.78);
+    cx.fillStyle='rgba(0,210,255,.6)';cx.font='13px Rajdhani,sans-serif';
+    cx.fillText('WORLD 1 から挑戦しよう',W*.5,H*.86);
+  }
+}
+
+function drawTutQbit(cx,x,y,r,pos){
+  const col=pos?'#ff6b8a':'#6b9fff';
+  cx.save();cx.shadowColor=col;cx.shadowBlur=18;
+  const g=cx.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r);
+  g.addColorStop(0,pos?'rgba(255,200,210,.95)':'rgba(170,200,255,.95)');
+  g.addColorStop(1,pos?'rgba(210,30,70,.9)':'rgba(30,80,220,.9)');
+  cx.fillStyle=g;cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fill();
+  cx.strokeStyle=col;cx.lineWidth=1.5;cx.stroke();
+  cx.fillStyle='rgba(10,5,20,.8)';
+  cx.beginPath();cx.arc(x-r*.3,y-r*.22,r*.17,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(x+r*.3,y-r*.22,r*.17,0,Math.PI*2);cx.fill();
+  cx.strokeStyle='rgba(10,5,20,.8)';cx.lineWidth=r*.1;cx.beginPath();cx.arc(x,y+r*.15,r*.3,.1,Math.PI-.1);cx.stroke();
+  cx.restore();
+}
+function drawTutCharge(cx,x,y,sz,pos){
+  const col=pos?'#ff2d55':'#3a8fff';
+  cx.save();cx.shadowColor=col;cx.shadowBlur=15;
+  const g=cx.createRadialGradient(x-sz*.3,y-sz*.3,0,x,y,sz);
+  g.addColorStop(0,pos?'rgba(255,140,160,.95)':'rgba(100,180,255,.95)');
+  g.addColorStop(1,pos?'rgba(180,10,40,.8)':'rgba(20,60,200,.8)');
+  cx.fillStyle=g;cx.beginPath();cx.arc(x,y,sz,0,Math.PI*2);cx.fill();
+  cx.strokeStyle=col;cx.lineWidth=1.5;cx.stroke();
+  cx.fillStyle='white';cx.font=`bold ${sz*1.1}px Syncopate,sans-serif`;cx.textAlign='center';cx.textBaseline='middle';
+  cx.fillText(pos?'+':'−',x,y+1);cx.textBaseline='alphabetic';
+  cx.restore();
+}
+function drawTutGoal(cx,x,y,r){
+  const ts=Date.now()/1000;
+  cx.save();cx.shadowColor='#39ff14';cx.shadowBlur=20;
+  for(let i=2;i>=1;i--){cx.globalAlpha=.04/i;cx.fillStyle='#39ff14';cx.beginPath();cx.arc(x,y,r+i*10+Math.sin(ts*2)*3,0,Math.PI*2);cx.fill();}
+  cx.globalAlpha=1;
+  cx.fillStyle='rgba(57,255,20,.12)';cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fill();
+  cx.save();cx.translate(x,y);cx.rotate(ts*.6);cx.strokeStyle='rgba(57,255,20,.5)';cx.lineWidth=1.2;
+  cx.beginPath();for(let i=0;i<6;i++){const a=i/6*Math.PI*2;i?cx.lineTo(Math.cos(a)*r,Math.sin(a)*r):cx.moveTo(Math.cos(a)*r,Math.sin(a)*r);}cx.closePath();cx.stroke();cx.restore();
+  cx.strokeStyle='#39ff14';cx.lineWidth=2;cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.stroke();
+  cx.fillStyle='#39ff14';cx.font=`bold ${r*.5}px Syncopate,sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText('GOAL',x,y);cx.textBaseline='alphabetic';
+  cx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MAP SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+const STAGE_META=[
+  {id:'1-1',name:'はじめての斥力',    eq:'F = qE',          world:'WORLD 1',idx:0},
+  {id:'1-2',name:'引き寄せの谷',      eq:'|F| = kq₁q₂/r²', world:'WORLD 1',idx:1},
+  {id:'1-3',name:'電場の迷路',        eq:'∮E·dA = Q/ε₀',   world:'WORLD 1',idx:2},
+  {id:'2-1',name:'右手の法則',        eq:'F = qv×B',        world:'WORLD 2',idx:3},
+  {id:'2-2',name:'サイクロトロン',    eq:'r = mv/qB',       world:'WORLD 2',idx:4},
+  {id:'2-3',name:'速度セレクター',    eq:'v = E/B',         world:'WORLD 2',idx:5},
+];
+const bestScores=Array(6).fill(null);
+function refreshMapStars(){
+  STAGE_META.forEach((m,i)=>{
+    const el=$(`stars-${i}`);if(!el)return;
+    const b=bestScores[i];const s=b===null?0:b>=3000?3:b>=2000?2:1;
+    el.textContent='★'.repeat(s)+'☆'.repeat(3-s);
+  });
+}
+const ntip=$('ntip');
+document.querySelectorAll('.snode').forEach(node=>{
+  const idx=parseInt(node.dataset.idx);
+  node.addEventListener('mouseenter',e=>{
+    if(idx<0)return;const m=STAGE_META[idx];if(!m)return;
+    $('nt-id').textContent='STAGE '+m.id;
+    $('nt-id').style.color=m.world==='WORLD 2'?'var(--mag)':'var(--cyan)';
+    $('nt-name').textContent=m.name;$('nt-eq').textContent=m.eq;
+    $('nt-eq').style.color=m.world==='WORLD 2'?'var(--mag)':'var(--gold)';
+    const b=bestScores[idx];const s=b===null?0:b>=3000?3:b>=2000?2:1;
+    $('nt-stars').textContent='★'.repeat(s)+'☆'.repeat(3-s);
+    $('nt-play').dataset.idx=idx;
+    $('nt-play').style.background=m.world==='WORLD 2'?'var(--mag)':'var(--cyan)';
+    const rc=node.getBoundingClientRect(),mc=$('map-wrap').getBoundingClientRect();
+    let tx=rc.right-mc.left+10,ty=rc.top-mc.top-15;
+    if(tx+230>mc.width)tx=rc.left-mc.left-240;
+    ty=clamp(ty,0,mc.height-200);
+    ntip.style.left=tx+'px';ntip.style.top=ty+'px';
+    ntip.classList.add('show');
+  });
+  node.addEventListener('mouseleave',()=>ntip.classList.remove('show'));
+  node.addEventListener('click',()=>{if(idx<0)return;loadStage(idx);goTo('game');});
+});
+$('nt-play').addEventListener('click',()=>{
+  const i=parseInt($('nt-play').dataset.idx);if(!isNaN(i)){loadStage(i);goTo('game');}
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  GAME ENGINE
+// ═══════════════════════════════════════════════════════════════════
+const KE=900, KB=55, DT=1/60, QBIT_R=13, GOAL_R=24, MAX_V=420, SUBSTEPS=5;
+
+const STAGES=[
+  {id:'1-1',title:'1-1: はじめての斥力',world:'WORLD 1 — ELECTRIC JUNGLE',
+    hint:'同符号の電荷を Qbit の右側に置いて、左のゴールへ押し出そう！',
+    formula:'F = qE',fDesc:'電場 E 中の電荷 q に働く力。同符号で反発、異符号で引力！',
+    qPos:[.78,.5],qVel:[0,0],qCharge:+1,goalPos:[.14,.5],
+    fixedCharges:[],fixedWires:[],walls:[],maxPos:3,maxNeg:2,maxWire:0,
+    hint2:'∮E·dA = Q/ε₀  ← ガウスの法則！',stars:[2,3,4]},
+  {id:'1-2',title:'1-2: 引き寄せの谷',world:'WORLD 1 — ELECTRIC JUNGLE',
+    hint:'負電荷でゴール付近に「谷」を作ると Qbit が引き寄せられる！',
+    formula:'|F| = kq₁q₂/r²',fDesc:'クーロンの法則。距離 r の二乗に反比例。',
+    qPos:[.14,.5],qVel:[0,0],qCharge:+1,goalPos:[.84,.5],
+    fixedCharges:[{x:.47,y:.22,q:-2.5,fixed:true},{x:.47,y:.78,q:-2.5,fixed:true}],
+    fixedWires:[],walls:[],maxPos:2,maxNeg:3,maxWire:0,
+    hint2:'重ね合わせの原理: E = Σ kqᵢ/rᵢ²',stars:[3,4,5]},
+  {id:'1-3',title:'1-3: 電場の迷路',world:'WORLD 1 — ELECTRIC JUNGLE',
+    hint:'中央の大きな正電荷が障壁。上か下を迂回させよう！',
+    formula:'∮E·dA = Q_enc/ε₀',fDesc:'ガウスの法則。閉曲面の電場総量は内部電荷量で決まる。',
+    qPos:[.09,.5],qVel:[0,0],qCharge:+1,goalPos:[.89,.5],
+    fixedCharges:[{x:.5,y:.5,q:+6.5,fixed:true}],fixedWires:[],
+    walls:[{x1:.43,y1:.1,x2:.43,y2:.4},{x1:.43,y1:.6,x2:.43,y2:.9},{x1:.57,y1:.1,x2:.57,y2:.4},{x1:.57,y1:.6,x2:.57,y2:.9}],
+    maxPos:4,maxNeg:4,maxWire:0,
+    hint2:'ガウスの法則：強い電荷は広範囲に場を形成する。',stars:[4,5,7]},
+  {id:'2-1',title:'2-1: 右手の法則',world:'WORLD 2 — MAGNETIC MAZE',
+    hint:'ドラッグで電流ワイヤーを描こう。「B FIELD」表示で磁場を確認しながら進めよう！',
+    formula:'F = qv×B',fDesc:'ローレンツ磁気力。速度 v と磁場 B の外積。軌道が曲がる！',
+    qPos:[.14,.5],qVel:[200,0],qCharge:+1,goalPos:[.84,.5],
+    fixedCharges:[],fixedWires:[],walls:[],maxPos:0,maxNeg:0,maxWire:3,
+    hint2:'∮B·dl = μ₀I  ← アンペールの法則！',stars:[2,3,4]},
+  {
+    // CYCLOTRON: ギャップを広げた（0.32→0.55の範囲で開口）
+    id:'2-2',title:'2-2: サイクロトロン',world:'WORLD 2 — MAGNETIC MAZE',
+    hint:'均一な磁場でQbitを円運動させる。壁の間を通り抜けるよう磁場の強さを調整！B FIELDで確認しよう。',
+    formula:'r = mv / qB',fDesc:'サイクロトロン運動。B が強いほど小さく曲がる。ゴールへ通り抜ける半径を狙え！',
+    qPos:[.12,.5],qVel:[170,0],qCharge:+1,goalPos:[.88,.5],
+    fixedCharges:[],fixedWires:[],
+    walls:[
+      {x1:.44,y1:.06,x2:.44,y2:.38},  // 上左壁 (ギャップ広げた: ~.38まで)
+      {x1:.44,y1:.62,x2:.44,y2:.94},  // 下左壁 (ギャップ: .62から)
+      {x1:.56,y1:.06,x2:.56,y2:.38},  // 上右壁
+      {x1:.56,y1:.62,x2:.56,y2:.94},  // 下右壁
+    ],
+    maxPos:0,maxNeg:0,maxWire:4,
+    hint2:'r = mv/qB  ← サイクロトロン半径の法則！',stars:[3,4,5]},
+  {id:'2-3',title:'2-3: 速度セレクター',world:'WORLD 2 — MAGNETIC MAZE',
+    hint:'E場とB場の力が釣り合うと qE = qvB → v = E/B となり直進する！固定電荷と電流のバランスを取ろう。',
+    formula:'v = E / B',fDesc:'速度セレクター。電場力と磁場力が釣り合う特定速度だけが直進！',
+    qPos:[.1,.5],qVel:[220,0],qCharge:+1,goalPos:[.88,.5],
+    fixedCharges:[{x:.5,y:.18,q:+4,fixed:true},{x:.5,y:.82,q:+4,fixed:true}],
+    fixedWires:[],
+    walls:[{x1:.3,y1:.3,x2:.3,y2:.7},{x1:.7,y1:.3,x2:.7,y2:.7}],
+    maxPos:2,maxNeg:2,maxWire:3,
+    hint2:'速度セレクター: qE = qvB → v = E/B',stars:[4,5,6]},
+];
+
+// canvas setup
+const gc_el=$('gc'),gctx=gc_el.getContext('2d');
+const pc_el=$('pc'),pctx=pc_el.getContext('2d');
+const wc_el=$('wc'),wctx=wc_el.getContext('2d');
+const cwrap=$('cwrap');
+let W=0,H=0;
+function resizeCanvases(){
+  const r=cwrap.getBoundingClientRect();W=r.width;H=r.height;
+  gc_el.width=W;gc_el.height=H;pc_el.width=W;pc_el.height=H;wc_el.width=W;wc_el.height=H;
+  if(!running&&stg)drawFrame();
+}
+addEventListener('resize',resizeCanvases);
+const sx=n=>n*W, sy=n=>n*H;
+
+// ── State ────────────────────────────────────────────────────────────
+let stgIdx=0,stg=null;
+let qbit={x:0,y:0,vx:0,vy:0,charge:1,trail:[]};
+let charges=[],placedPos=0,placedNeg=0;
+let wires=[],placedWire=0;
+let running=false,dead=false,won=false;
+let tool='pos',fMode='vec',mag=3;
+let animId=null,flashTimer=null,gScore=0;
+
+// ── Wire drawing state ───────────────────────────────────────────────
+let wireDrag=false,wireDragStart=null;
+
+// ── Edit/Move state ──────────────────────────────────────────────────
+let selObj=null; // {type:'charge'|'wire', idx:number}
+let editDrag=false,editDragOff={x:0,y:0};
+
+// ── Saved state for retry (preserves placement) ──────────────────────
+let savedCharges=null,savedWires=null,savedPlacedPos=0,savedPlacedNeg=0,savedPlacedWire=0;
+
+// ── Particles ────────────────────────────────────────────────────────
+let ptcls=[];
+function burst(x,y,col,n=16){
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=Math.random()*180+40;
+    ptcls.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,dec:.023+Math.random()*.02,r:Math.random()*3+1,color:col});}
+}
+function tickPtcls(){
+  pctx.clearRect(0,0,W,H);
+  ptcls=ptcls.filter(p=>{p.x+=p.vx*DT*3;p.y+=p.vy*DT*3;p.vx*=.94;p.vy*=.94;p.life-=p.dec;if(p.life<=0)return false;
+    pctx.globalAlpha=p.life*.8;pctx.fillStyle=p.color;pctx.beginPath();pctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);pctx.fill();return true;});
+  pctx.globalAlpha=1;
+}
+
+// ── Load Stage ──────────────────────────────────────────────────────
+function loadStage(idx){
+  stgIdx=idx;stg=STAGES[idx];
+  resetQbit();
+  charges=stg.fixedCharges.map(c=>({...c,x:sx(c.x),y:sy(c.y)}));
+  wires=stg.fixedWires?stg.fixedWires.map(w=>({...w,x1:sx(w.x1),y1:sy(w.y1),x2:sx(w.x2),y2:sy(w.y2)})):[];
+  placedPos=0;placedNeg=0;placedWire=0;
+  savedCharges=null;savedWires=null; // clear saved state
+  selObj=null;editDrag=false;
+  running=false;dead=false;won=false;ptcls=[];gScore=0;
+  $('g-title').textContent=stg.title;$('g-world').textContent=stg.world;
+  $('hint-t').textContent=stg.hint;$('fc-eq').textContent=stg.formula;$('fc-desc').textContent=stg.fDesc;
+  $('scounter').textContent=`${idx+1} / ${STAGES.length}`;
+  $('g-score').textContent='0';$('g-best').textContent=bestScores[idx]||'—';
+  $('ov-clear').classList.remove('show');$('ov-over').classList.remove('show');
+  $('b-run').textContent='▶  スタート';$('b-run').classList.remove('running');
+  $('ph-spd').textContent='0.0';$('ph-f').textContent='0.0';$('ph-bz').textContent='0.00';
+  const isW2=stg.world.includes('WORLD 2');
+  $('w2pill').style.display=isW2?'block':'none';
+  $('fc-eq').style.color=isW2?'var(--mag)':'var(--cyan)';
+  if(stg.maxWire>0&&stg.maxPos===0)setTool('wire');else setTool('pos');
+  updateResUI();resizeCanvases();
+}
+function resetQbit(){
+  qbit={x:sx(stg.qPos[0]),y:sy(stg.qPos[1]),vx:stg.qVel[0],vy:stg.qVel[1],charge:stg.qCharge,trail:[]};
+}
+function stopSim(){running=false;cancelAnimationFrame(animId);}
+
+// ── Save & restore placement ─────────────────────────────────────────
+function savePlacement(){
+  savedCharges=charges.map(c=>({...c}));
+  savedWires=wires.map(w=>({...w}));
+  savedPlacedPos=placedPos;savedPlacedNeg=placedNeg;savedPlacedWire=placedWire;
+}
+function restorePlacement(){
+  if(savedCharges===null)return;
+  charges=savedCharges.map(c=>({...c}));
+  wires=savedWires.map(w=>({...w}));
+  placedPos=savedPlacedPos;placedNeg=savedPlacedNeg;placedWire=savedPlacedWire;
+}
+
+// ── Physics ──────────────────────────────────────────────────────────
+function eField(px,py){
+  let Ex=0,Ey=0;
+  for(const c of charges){const dx=px-c.x,dy=py-c.y,r2=dx*dx+dy*dy;if(r2<64)continue;const r=Math.sqrt(r2),m=KE*c.q/r2;Ex+=m*dx/r;Ey+=m*dy/r;}
+  return{Ex,Ey};
+}
+function bField(px,py){
+  let Bz=0;
+  for(const w of wires){const dx=w.x2-w.x1,dy=w.y2-w.y1,len=Math.hypot(dx,dy);if(len<1)continue;
+    const ux=dx/len,uy=dy/len;const t=clamp(((px-w.x1)*ux+(py-w.y1)*uy)/len,0,1);
+    const cx2=w.x1+t*dx,cy2=w.y1+t*dy,rx=px-cx2,ry=py-cy2,dist=Math.hypot(rx,ry);
+    if(dist<8)continue;const cross=ux*ry-uy*rx;Bz+=(cross>0?1:-1)*KB*w.I/dist;}
+  return Bz;
+}
+function step(){
+  const{Ex,Ey}=eField(qbit.x,qbit.y);const Bz=bField(qbit.x,qbit.y);
+  const ax=qbit.charge*(Ex+qbit.vy*Bz),ay=qbit.charge*(Ey-qbit.vx*Bz);
+  qbit.vx+=ax*DT;qbit.vy+=ay*DT;
+  const spd=Math.hypot(qbit.vx,qbit.vy);
+  if(spd>MAX_V){qbit.vx=qbit.vx/spd*MAX_V;qbit.vy=qbit.vy/spd*MAX_V;}
+  qbit.x+=qbit.vx*DT;qbit.y+=qbit.vy*DT;
+  qbit.trail.push({x:qbit.x,y:qbit.y});if(qbit.trail.length>160)qbit.trail.shift();
+  $('ph-spd').textContent=spd.toFixed(1);$('ph-f').textContent=Math.hypot(ax,ay).toFixed(1);$('ph-bz').textContent=Bz.toFixed(2);
+  for(const w of stg.walls){if(segCircle(sx(w.x1),sy(w.y1),sx(w.x2),sy(w.y2),qbit.x,qbit.y,QBIT_R+5)){trigOver('導電壁に衝突した！');return;}}
+  if(qbit.x<-80||qbit.x>W+80||qbit.y<-80||qbit.y>H+80){trigOver('Qbit がエリア外へ飛び出した！');return;}
+  if(Math.hypot(qbit.x-sx(stg.goalPos[0]),qbit.y-sy(stg.goalPos[1]))<GOAL_R+QBIT_R-6){trigClear();return;}
+}
+function segCircle(x1,y1,x2,y2,cx,cy,r){
+  const dx=x2-x1,dy=y2-y1,l2=dx*dx+dy*dy;const t=clamp(((cx-x1)*dx+(cy-y1)*dy)/l2,0,1);
+  return(x1+t*dx-cx)**2+(y1+t*dy-cy)**2<r*r;
+}
+function trigClear(){
+  running=false;won=true;const n=placedPos+placedNeg+placedWire;const t=stg.stars;const s=n<=t[0]?3:n<=t[1]?2:1;
+  gScore=s*1200-n*55;if(!bestScores[stgIdx]||gScore>bestScores[stgIdx])bestScores[stgIdx]=gScore;
+  $('g-score').textContent=gScore;$('g-best').textContent=bestScores[stgIdx];
+  $('ov-stars').textContent='★'.repeat(s)+'☆'.repeat(3-s);$('ov-cmsg').textContent=`配置数: ${n} | スコア: ${gScore}`;
+  $('ov-clear').classList.add('show');burst(sx(stg.goalPos[0]),sy(stg.goalPos[1]),'#39ff14',40);burst(qbit.x,qbit.y,'#00d2ff',25);showFlash(stg.hint2);
+}
+function trigOver(msg){
+  running=false;dead=true;$('ov-omsg').textContent=msg;$('ov-over').classList.add('show');burst(qbit.x,qbit.y,'#ff2d55',28);
+}
+
+// ── Field Visualization ──────────────────────────────────────────────
+function drawEVec(){
+  const step=56,cols=Math.ceil(W/step)+1,rows=Math.ceil(H/step)+1;
+  for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){
+    const px=i*step,py=j*step,{Ex,Ey}=eField(px,py);const m=Math.hypot(Ex,Ey);if(m<.01)continue;
+    const len=Math.min(22,4+Math.log1p(m)*2.6);const nx=Ex/m,ny=Ey/m;const t=clamp(Math.log1p(m)/7,0,1);
+    const r=lerp(30,255,t)|0,g2=lerp(120,40,t)|0,b=lerp(220,60,t)|0;
+    gctx.save();gctx.translate(px,py);gctx.globalAlpha=.15+t*.4;
+    gctx.strokeStyle=`rgb(${r},${g2},${b})`;gctx.lineWidth=1.3;
+    gctx.beginPath();gctx.moveTo(-nx*len*.45,-ny*len*.45);gctx.lineTo(nx*len*.45,ny*len*.45);gctx.stroke();
+    gctx.fillStyle=`rgb(${r},${g2},${b})`;const hx=nx*len*.45,hy=ny*len*.45,px2=-ny*3,py2=nx*3;
+    gctx.beginPath();gctx.moveTo(hx,hy);gctx.lineTo(hx-nx*6+px2,hy-ny*6+py2);gctx.lineTo(hx-nx*6-px2,hy-ny*6-py2);gctx.fill();gctx.restore();
+  }
+}
+function drawEStr(){
+  const srcs=charges.filter(c=>c.q>0);if(!srcs.length)return;
+  for(const src of srcs){const n=10+Math.floor(Math.abs(src.q));
+    for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2;let x=src.x+Math.cos(a)*20,y=src.y+Math.sin(a)*20;
+      gctx.beginPath();gctx.moveTo(x,y);let ok=true;
+      for(let s=0;s<260&&ok;s++){const{Ex,Ey}=eField(x,y);const m=Math.hypot(Ex,Ey);if(m<.01)break;x+=Ex/m*6;y+=Ey/m*6;gctx.lineTo(x,y);
+        if(x<-40||x>W+40||y<-40||y>H+40)ok=false;for(const c of charges)if(c.q<0&&Math.hypot(x-c.x,y-c.y)<16){ok=false;break;}}
+      const t=clamp(src.q/7,0,1);gctx.strokeStyle=`rgba(${lerp(40,255,t)|0},${lerp(140,50,t)|0},${lerp(255,60,t)|0},0.28)`;gctx.lineWidth=1.6;gctx.stroke();}}
+}
+function drawBField(){
+  const ts=Date.now()/1000;
+  for(const w of wires){
+    const cx2=(w.x1+w.x2)/2,cy2=(w.y1+w.y2)/2;const isPos=w.I>0;
+    const col=isPos?'rgba(0,255,170,':'rgba(255,159,64,';
+    for(let ri=1;ri<=5;ri++){const baseR=ri*32,phase=ts*(isPos?1:-1)*1.5;
+      gctx.save();gctx.translate(cx2,cy2);gctx.strokeStyle=col+(0.12/ri+.04)+')';gctx.lineWidth=1.5;
+      const s=phase%(Math.PI*2);gctx.beginPath();gctx.arc(0,0,baseR,s,s+Math.PI*1.6);gctx.stroke();
+      const arrowA=s+Math.PI*1.6,ax=Math.cos(arrowA)*baseR,ay=Math.sin(arrowA)*baseR;
+      const tangA=arrowA+(isPos?Math.PI*.5:-Math.PI*.5);
+      gctx.strokeStyle=col+(0.35/ri+.1)+')';gctx.lineWidth=1;
+      gctx.beginPath();gctx.moveTo(ax,ay);gctx.lineTo(ax+Math.cos(tangA-2.5)*8,ay+Math.sin(tangA-2.5)*8);gctx.lineTo(ax+Math.cos(tangA+2.5)*8,ay+Math.sin(tangA+2.5)*8);gctx.closePath();gctx.stroke();gctx.restore();
+    }
+    const step=50;
+    for(let gx=0;gx<W;gx+=step)for(let gy=0;gy<H;gy+=step){
+      const Bz=bField(gx,gy);if(Math.abs(Bz)<.05)continue;const sz=clamp(Math.abs(Bz)*.8,2,10);const out=Bz>0;
+      gctx.save();gctx.translate(gx,gy);gctx.globalAlpha=clamp(Math.abs(Bz)*.08,0,.6);gctx.fillStyle=out?'#00ffaa':'#ff9f40';gctx.strokeStyle=gctx.fillStyle;gctx.lineWidth=1;
+      if(out){gctx.beginPath();gctx.arc(0,0,sz*.5,0,Math.PI*2);gctx.fill();gctx.beginPath();gctx.arc(0,0,sz,0,Math.PI*2);gctx.stroke();}
+      else{gctx.beginPath();gctx.moveTo(-sz*.7,-sz*.7);gctx.lineTo(sz*.7,sz*.7);gctx.stroke();gctx.beginPath();gctx.moveTo(sz*.7,-sz*.7);gctx.lineTo(-sz*.7,sz*.7);gctx.stroke();gctx.beginPath();gctx.arc(0,0,sz,0,Math.PI*2);gctx.stroke();}
+      gctx.restore();
+    }
+  }
+}
+
+// ── Main Draw ────────────────────────────────────────────────────────
+function drawFrame(){
+  if(!stg)return;gctx.clearRect(0,0,W,H);
+  gctx.fillStyle='rgba(0,210,255,.05)';for(let x=0;x<W;x+=42)for(let y=0;y<H;y+=42){gctx.beginPath();gctx.arc(x,y,1,0,Math.PI*2);gctx.fill();}
+  if(fMode==='vec')drawEVec();if(fMode==='str')drawEStr();if(fMode==='mag')drawBField();
+  // walls
+  for(const w of stg.walls){
+    const x1=sx(w.x1),y1=sy(w.y1),x2=sx(w.x2),y2=sy(w.y2);
+    gctx.save();gctx.shadowColor='#ff2d55';gctx.shadowBlur=10;gctx.strokeStyle='#ff2d55';gctx.lineWidth=4.5;
+    gctx.beginPath();gctx.moveTo(x1,y1);gctx.lineTo(x2,y2);gctx.stroke();gctx.shadowBlur=0;
+    const ln=Math.hypot(x2-x1,y2-y1),steps=Math.floor(ln/10);const nx2=-(y2-y1)/ln,ny2=(x2-x1)/ln;
+    gctx.strokeStyle='rgba(255,45,85,.25)';gctx.lineWidth=1;
+    for(let i=0;i<=steps;i++){const tt=i/steps;gctx.beginPath();gctx.moveTo(x1+tt*(x2-x1),y1+tt*(y2-y1));gctx.lineTo(x1+tt*(x2-x1)+nx2*7,y1+tt*(y2-y1)+ny2*7);gctx.stroke();}
+    gctx.restore();
+  }
+  drawWires(gctx);
+  drawGoal(sx(stg.goalPos[0]),sy(stg.goalPos[1]));
+  for(let i=0;i<charges.length;i++)drawCharge(charges[i],selObj&&selObj.type==='charge'&&selObj.idx===i);
+  // trail
+  for(let i=1;i<qbit.trail.length;i++){const tt=i/qbit.trail.length;const p=qbit.trail[i-1],q2=qbit.trail[i];
+    gctx.strokeStyle=`rgba(0,210,255,${tt*.52})`;gctx.lineWidth=1.5+tt*2.5;gctx.beginPath();gctx.moveTo(p.x,p.y);gctx.lineTo(q2.x,q2.y);gctx.stroke();}
+  drawQbit();
+}
+function drawWires(ctx){
+  for(let wi=0;wi<wires.length;wi++){const w=wires[wi];const isSelected=selObj&&selObj.type==='wire'&&selObj.idx===wi;
+    const dx=w.x2-w.x1,dy=w.y2-w.y1,len=Math.hypot(dx,dy);if(len<2)continue;
+    const isPos=w.I>0,col=isPos?'#00ffaa':'#ff9f40';
+    ctx.save();ctx.shadowColor=col;ctx.shadowBlur=isSelected?20:10;
+    ctx.strokeStyle=isSelected?'#ffffff':col;ctx.lineWidth=isSelected?5:3.5;
+    ctx.beginPath();ctx.moveTo(w.x1,w.y1);ctx.lineTo(w.x2,w.y2);ctx.stroke();ctx.shadowBlur=0;
+    const segs=Math.max(1,Math.floor(len/65));
+    for(let i=1;i<=segs;i++){const t=i/(segs+1),mx=w.x1+t*dx,my=w.y1+t*dy,ux=dx/len,uy=dy/len,as=9;
+      ctx.fillStyle=col;ctx.globalAlpha=.88;ctx.beginPath();ctx.moveTo(mx+ux*as,my+uy*as);ctx.lineTo(mx-ux*as+uy*as*.55,my-uy*as-ux*as*.55);ctx.lineTo(mx-ux*as-uy*as*.55,my-uy*as+ux*as*.55);ctx.fill();ctx.globalAlpha=1;}
+    ctx.fillStyle=col;ctx.globalAlpha=.7;ctx.beginPath();ctx.arc(w.x1,w.y1,5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w.x2,w.y2,5,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    const mx2=(w.x1+w.x2)/2,my2=(w.y1+w.y2)/2;ctx.fillStyle=col;ctx.font='10px Share Tech Mono,monospace';ctx.textAlign='center';ctx.fillText(`I=${Math.abs(w.I).toFixed(0)}${isPos?'→':'←'}`,mx2,my2-14);
+    if(isSelected){ctx.strokeStyle='rgba(255,217,61,.6)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(w.x1,w.y1);ctx.lineTo(w.x2,w.y2);ctx.stroke();ctx.setLineDash([]);}
+    ctx.restore();
+  }
+}
+function drawGoal(x,y){
+  const ts=Date.now()/1000;
+  gctx.save();gctx.shadowColor='#39ff14';gctx.shadowBlur=22;
+  for(let i=3;i>=1;i--){gctx.globalAlpha=.04/i;gctx.fillStyle='#39ff14';gctx.beginPath();gctx.arc(x,y,GOAL_R+8+i*10+Math.sin(ts*2.2)*4,0,Math.PI*2);gctx.fill();}gctx.globalAlpha=1;
+  gctx.fillStyle='rgba(57,255,20,.11)';gctx.beginPath();gctx.arc(x,y,GOAL_R,0,Math.PI*2);gctx.fill();
+  gctx.save();gctx.translate(x,y);gctx.rotate(ts*.6);gctx.strokeStyle='rgba(57,255,20,.5)';gctx.lineWidth=1.2;
+  gctx.beginPath();for(let i=0;i<6;i++){const a=i/6*Math.PI*2;i?gctx.lineTo(Math.cos(a)*GOAL_R,Math.sin(a)*GOAL_R):gctx.moveTo(Math.cos(a)*GOAL_R,Math.sin(a)*GOAL_R);}gctx.closePath();gctx.stroke();gctx.restore();
+  gctx.strokeStyle='#39ff14';gctx.lineWidth=2;gctx.beginPath();gctx.arc(x,y,GOAL_R,0,Math.PI*2);gctx.stroke();
+  gctx.fillStyle='#39ff14';gctx.font='bold 12px Syncopate,sans-serif';gctx.textAlign='center';gctx.textBaseline='middle';gctx.fillText('GOAL',x,y);gctx.textBaseline='alphabetic';
+  gctx.restore();
+}
+function drawCharge(c,selected=false){
+  const pos=c.q>0,col=pos?'#ff2d55':'#3a8fff',sz=10+Math.abs(c.q)*2.4;
+  gctx.save();gctx.shadowColor=col;gctx.shadowBlur=selected?22:pos?17:13;
+  const g=gctx.createRadialGradient(c.x-sz*.3,c.y-sz*.35,0,c.x,c.y,sz);
+  g.addColorStop(0,pos?'rgba(255,140,160,.95)':'rgba(100,180,255,.95)');g.addColorStop(1,pos?'rgba(180,10,40,.8)':'rgba(20,60,200,.8)');
+  gctx.fillStyle=g;gctx.beginPath();gctx.arc(c.x,c.y,sz,0,Math.PI*2);gctx.fill();
+  gctx.strokeStyle=selected?'#ffd93d':col;gctx.lineWidth=selected?2.5:1.5;gctx.stroke();
+  if(selected){gctx.strokeStyle='rgba(255,217,61,.5)';gctx.lineWidth=1.5;gctx.setLineDash([3,4]);gctx.beginPath();gctx.arc(c.x,c.y,sz+8,0,Math.PI*2);gctx.stroke();gctx.setLineDash([]);}
+  gctx.fillStyle='rgba(255,255,255,.95)';gctx.font=`bold ${sz*1.1}px Syncopate,sans-serif`;gctx.textAlign='center';gctx.textBaseline='middle';
+  gctx.fillText(pos?'+':'−',c.x,c.y+1);gctx.textBaseline='alphabetic';if(c.fixed){gctx.strokeStyle='rgba(255,255,255,.18)';gctx.lineWidth=1;gctx.setLineDash([3,4]);gctx.beginPath();gctx.arc(c.x,c.y,sz+7,0,Math.PI*2);gctx.stroke();gctx.setLineDash([]);}
+  gctx.restore();
+}
+function drawQbit(){
+  const{x,y}=qbit,ts=Date.now()/650;const pos=qbit.charge>0,col=pos?'#ff6b8a':'#6b9fff';
+  gctx.save();gctx.shadowColor=col;gctx.shadowBlur=28+Math.sin(ts)*6;
+  const ag=gctx.createRadialGradient(x,y,0,x,y,QBIT_R*2.8);ag.addColorStop(0,pos?'rgba(255,100,130,.22)':'rgba(100,140,255,.22)');ag.addColorStop(1,'transparent');
+  gctx.fillStyle=ag;gctx.beginPath();gctx.arc(x,y,QBIT_R*2.8,0,Math.PI*2);gctx.fill();
+  const bg=gctx.createRadialGradient(x-QBIT_R*.4,y-QBIT_R*.4,0,x,y,QBIT_R);bg.addColorStop(0,pos?'rgba(255,200,210,.95)':'rgba(170,200,255,.95)');bg.addColorStop(1,pos?'rgba(210,30,70,.9)':'rgba(30,80,220,.9)');
+  gctx.fillStyle=bg;gctx.beginPath();gctx.arc(x,y,QBIT_R,0,Math.PI*2);gctx.fill();gctx.strokeStyle=col;gctx.lineWidth=2;gctx.stroke();
+  const spd=Math.hypot(qbit.vx,qbit.vy),eo=clamp(spd*.007,0,2.5);
+  gctx.fillStyle='rgba(10,5,20,.85)';gctx.beginPath();gctx.arc(x-4+eo,y-3,2.2,0,Math.PI*2);gctx.fill();gctx.beginPath();gctx.arc(x+4+eo,y-3,2.2,0,Math.PI*2);gctx.fill();
+  gctx.strokeStyle='rgba(10,5,20,.85)';gctx.lineWidth=1.5;gctx.beginPath();if(spd>230){gctx.arc(x+eo*.4,y+3,3,0,Math.PI*2);}else{gctx.arc(x+eo*.3,y+2,3.8,.1,Math.PI-.1);}gctx.stroke();
+  gctx.fillStyle='rgba(255,255,255,.7)';gctx.font='bold 8px Syncopate,sans-serif';gctx.textAlign='center';gctx.textBaseline='middle';gctx.fillText(pos?'+':'−',x,y+QBIT_R+8);gctx.textBaseline='alphabetic';
+  gctx.restore();
+}
+
+// ── Wire preview canvas ──────────────────────────────────────────────
+function drawWirePreview(mx,my){
+  wctx.clearRect(0,0,W,H);if(!wireDrag||!wireDragStart)return;
+  const isPos=tool==='wire',col=isPos?'rgba(0,255,170,.6)':'rgba(255,159,64,.6)';
+  wctx.save();wctx.strokeStyle=col;wctx.lineWidth=2.5;wctx.setLineDash([8,6]);
+  wctx.beginPath();wctx.moveTo(wireDragStart.x,wireDragStart.y);wctx.lineTo(mx,my);wctx.stroke();wctx.setLineDash([]);
+  wctx.fillStyle=col;wctx.beginPath();wctx.arc(wireDragStart.x,wireDragStart.y,5,0,Math.PI*2);wctx.fill();
+  wctx.beginPath();wctx.arc(mx,my,5,0,Math.PI*2);wctx.fill();wctx.restore();
+}
+
+// ── Edit: find object at point ───────────────────────────────────────
+function findObjAt(mx,my){
+  // Charges (non-fixed)
+  for(let i=charges.length-1;i>=0;i--){if(charges[i].fixed)continue;const sz=10+Math.abs(charges[i].q)*2.4;if(Math.hypot(mx-charges[i].x,my-charges[i].y)<sz+6)return{type:'charge',idx:i};}
+  // Wires (non-fixed): near midpoint
+  for(let i=wires.length-1;i>=0;i--){if(wires[i].fixed)continue;const mx2=(wires[i].x1+wires[i].x2)/2,my2=(wires[i].y1+wires[i].y2)/2;if(Math.hypot(mx-mx2,my-my2)<20)return{type:'wire',idx:i};}
+  return null;
+}
+
+// ── Game loop ────────────────────────────────────────────────────────
+function loop(){if(!running)return;for(let i=0;i<SUBSTEPS;i++)step();drawFrame();tickPtcls();animId=requestAnimationFrame(loop);}
+;(function idleLoop(){if(!running&&curScreen==='game'&&stg){drawFrame();tickPtcls();}requestAnimationFrame(idleLoop);})();
+
+// ── Canvas events ────────────────────────────────────────────────────
+gc_el.addEventListener('contextmenu',e=>{
+  e.preventDefault();if(running||dead||won)return;
+  const r=gc_el.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+  // Right-click: delete object (any tool)
+  const obj=findObjAt(mx,my);if(!obj)return;
+  if(obj.type==='charge'){const c=charges[obj.idx];if(c.q>0)placedPos--;else placedNeg--;charges.splice(obj.idx,1);}
+  else if(obj.type==='wire'){wires.splice(obj.idx,1);placedWire--;}
+  if(selObj&&selObj.type===obj.type&&selObj.idx===obj.idx)selObj=null;
+  updateResUI();
+});
+
+gc_el.addEventListener('mousedown',e=>{
+  if(running||dead||won)return;
+  const r=gc_el.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+  if(e.button!==0)return;
+
+  if(tool==='edit'){
+    const obj=findObjAt(mx,my);
+    if(obj){selObj=obj;editDrag=true;
+      if(obj.type==='charge'){editDragOff={x:mx-charges[obj.idx].x,y:my-charges[obj.idx].y};}
+      else{editDragOff={x:mx-(wires[obj.idx].x1+wires[obj.idx].x2)/2,y:my-(wires[obj.idx].y1+wires[obj.idx].y2)/2};}
+      gc_el.style.cursor='grabbing';
+    } else {selObj=null;editDrag=false;}
+    return;
+  }
+  if(tool==='wire'||tool==='wirer'){wireDrag=true;wireDragStart={x:mx,y:my};return;}
+  placeAt(mx,my);
+});
+
+gc_el.addEventListener('mousemove',e=>{
+  const r=gc_el.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+  if(wireDrag){drawWirePreview(mx,my);return;}
+  if(editDrag&&selObj){
+    if(selObj.type==='charge'){charges[selObj.idx].x=mx-editDragOff.x;charges[selObj.idx].y=my-editDragOff.y;}
+    else{const w=wires[selObj.idx],dx=w.x2-w.x1,dy=w.y2-w.y1;const nx2=mx-editDragOff.x,ny2=my-editDragOff.y;w.x1=nx2-dx/2;w.y1=ny2-dy/2;w.x2=nx2+dx/2;w.y2=ny2+dy/2;}
+    return;
+  }
+  // Hover cursor
+  if(tool==='edit'){const obj=findObjAt(mx,my);gc_el.style.cursor=obj?'grab':'crosshair';}
+});
+
+gc_el.addEventListener('mouseup',e=>{
+  const r=gc_el.getBoundingClientRect();const mx=e.clientX-r.left,my=e.clientY-r.top;
+  if(editDrag){editDrag=false;gc_el.style.cursor='grab';return;}
+  if(wireDrag){
+    wireDrag=false;wctx.clearRect(0,0,W,H);
+    if(Math.hypot(mx-wireDragStart.x,my-wireDragStart.y)<20||placedWire>=stg.maxWire){wireDragStart=null;return;}
+    const I=(tool==='wire'?1:-1)*mag*3;
+    wires.push({x1:wireDragStart.x,y1:wireDragStart.y,x2:mx,y2:my,I,fixed:false});
+    placedWire++;wireDragStart=null;updateResUI();showFlash('∮B·dl = μ₀I  ← 磁場を作った！');
+  }
+});
+
+gc_el.addEventListener('mouseleave',()=>{
+  if(wireDrag){wireDrag=false;wctx.clearRect(0,0,W,H);wireDragStart=null;}
+  if(editDrag){editDrag=false;}
+  gc_el.style.cursor='crosshair';
+});
+
+function placeAt(mx,my){
+  if(tool==='pos'||tool==='neg'){
+    const pos=tool==='pos';if(pos&&placedPos>=stg.maxPos)return;if(!pos&&placedNeg>=stg.maxNeg)return;
+    const q=pos?mag:-mag;charges.push({x:mx,y:my,q,fixed:false});
+    if(pos)placedPos++;else placedNeg++;
+    burst(mx,my,pos?'rgba(255,45,85,.8)':'rgba(58,143,255,.8)',10);updateResUI();showFlash('F = qE  ← 電場を変えた！');
+  }
+}
+
+// ── Control buttons ──────────────────────────────────────────────────
+$('b-run').addEventListener('click',()=>{
+  if(dead||won)return;
+  if(running){running=false;cancelAnimationFrame(animId);$('b-run').textContent='▶  再開';$('b-run').classList.remove('running');}
+  else{
+    savePlacement(); // ← 実行前に配置を保存
+    running=true;$('b-run').textContent='⏸  一時停止';$('b-run').classList.add('running');
+    showFlash('F=q(E+v×B) ← ローレンツ力！');animId=requestAnimationFrame(loop);
+  }
+});
+
+$('b-reset').addEventListener('click',()=>{
+  stopSim();resetQbit();qbit.trail=[];ptcls=[];dead=false;won=false;selObj=null;
+  $('ov-clear').classList.remove('show');$('ov-over').classList.remove('show');
+  $('b-run').textContent='▶  スタート';$('b-run').classList.remove('running');
+  $('ph-spd').textContent='0.0';$('ph-f').textContent='0.0';$('ph-bz').textContent='0.00';
+});
+
+$('b-retry').addEventListener('click',()=>{
+  // Retry: restore last saved placement
+  stopSim();resetQbit();qbit.trail=[];ptcls=[];dead=false;won=false;selObj=null;
+  restorePlacement();updateResUI();
+  $('ov-over').classList.remove('show');
+  $('b-run').textContent='▶  スタート';$('b-run').classList.remove('running');
+});
+
+$('b-next').addEventListener('click',()=>{if(stgIdx<STAGES.length-1)loadStage(stgIdx+1);else goTo('map');});
+$('b-wipe').addEventListener('click',()=>{
+  if(running)return;
+  charges=stg.fixedCharges.map(c=>({...c,x:sx(c.x),y:sy(c.y)}));
+  wires=stg.fixedWires?stg.fixedWires.map(w=>({...w,x1:sx(w.x1),y1:sy(w.y1),x2:sx(w.x2),y2:sy(w.y2)})):[];
+  placedPos=0;placedNeg=0;placedWire=0;savedCharges=null;selObj=null;updateResUI();
+});
+$('b-prev').addEventListener('click',()=>{if(stgIdx>0)loadStage(stgIdx-1);});
+$('b-snext').addEventListener('click',()=>{if(stgIdx<STAGES.length-1)loadStage(stgIdx+1);});
+
+// Tool buttons
+function setTool(t){
+  tool=t;
+  ['pos','neg','wire','wirer','edit'].forEach(id=>{const b=$(`t-${id}`);if(b)b.classList.remove('active');});
+  const m={pos:'t-pos',neg:'t-neg',wire:'t-wire',wirer:'t-wirer',edit:'t-edit'};
+  if(m[t])$(m[t]).classList.add('active');
+  $('edit-bar').style.display=t==='edit'?'block':'none';
+  gc_el.style.cursor=t==='edit'?'grab':'crosshair';
+  selObj=null;
+}
+['pos','neg','wire','wirer','edit'].forEach(id=>{
+  const el=$(`t-${id}`);if(!el)return;el.addEventListener('click',()=>setTool(id));
+});
+$('mag-sl').addEventListener('input',e=>{mag=+e.target.value;$('mag-disp').textContent=mag;});
+[['ft-off','off'],['ft-vec','vec'],['ft-str','str'],['ft-mag','mag']].forEach(([id,v])=>{
+  $(id).addEventListener('click',()=>{fMode=v;['ft-off','ft-vec','ft-str','ft-mag'].forEach(fid=>$(fid).classList.remove('active'));$(id).classList.add('active');});
+});
+
+// ── Flash ─────────────────────────────────────────────────────────────
+function showFlash(txt){
+  clearTimeout(flashTimer);const el=$('fflash');el.textContent=txt;el.classList.add('show');
+  flashTimer=setTimeout(()=>el.classList.remove('show'),3200);
+}
+function updateResUI(){
+  const mp=stg.maxPos,mn=stg.maxNeg,mw=stg.maxWire;
+  const rp=mp-placedPos,rn=mn-placedNeg,rw=mw-placedWire;
+  $('r-posn').textContent=`${rp}/${mp}`;$('r-posb').style.width=`${mp?rp/mp*100:0}%`;
+  $('r-negn').textContent=`${rn}/${mn}`;$('r-negb').style.width=`${mn?rn/mn*100:0}%`;
+  $('r-wirn').textContent=`${rw}/${mw}`;$('r-wirb').style.width=`${mw?rw/mw*100:0}%`;
+}
+
+// ── Keyboard ──────────────────────────────────────────────────────────
+addEventListener('keydown',e=>{
+  if(curScreen==='tut'){if(e.code==='ArrowRight'||e.code==='Space'){e.preventDefault();$('tut-next-btn').click();}return;}
+  if(curScreen!=='game')return;
+  if(e.code==='Space'){e.preventDefault();$('b-run').click();}
+  if(e.code==='KeyR')$('b-reset').click();
+  if(e.code==='KeyC')$('b-wipe').click();
+  if(e.code==='Digit1')setTool('pos');if(e.code==='Digit2')setTool('neg');
+  if(e.code==='Digit3')setTool('wire');if(e.code==='Digit4')setTool('wirer');
+  if(e.code==='Digit5')setTool('edit');
+  if(e.code==='Escape')goTo('map');
+  if(e.code==='KeyB'){fMode=fMode==='mag'?'vec':'mag';['ft-off','ft-vec','ft-str','ft-mag'].forEach(id=>$(id).classList.remove('active'));$(fMode==='mag'?'ft-mag':'ft-vec').classList.add('active');}
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────
+loadStage(0);goTo('title');
+</script>
+
+</body>
+</html>
